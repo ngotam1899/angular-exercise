@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+  <p>Edit user</p>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="data.name" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Username</mat-label>
+    <input matInput [(ngModel)]="data.username" />
+  </mat-form-field>
+    <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input matInput [(ngModel)]="data.password" disable/>
+  </mat-form-field>
+ <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input matInput [(ngModel)]="data.email" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Phone</mat-label>
+    <input matInput [(ngModel)]="data.phone" />
+  </mat-form-field>
+  <mat-radio-group>
+    <mat-radio-button name="is_admin" checked="{{data.isAdmin}}">Is admin</mat-radio-button>
+  </mat-radio-group>
+  <mat-radio-group>
+    <mat-radio-button name="is_active" checked="{{data.isActive}}">Is active</mat-radio-button>
+  </mat-radio-group>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="submitLogin()">Submit</button>
+  <!-- <button mat-button [mat-dialog-close]="data.username" cdkFocusInitial>
+    Login
+  </button> -->
+</div>
