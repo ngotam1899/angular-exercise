@@ -44,6 +44,7 @@ export class UserComponent implements OnInit {
     const dialogRef = this.dialog.open(UserFormComponent, {
       width: '500px',
       data: {
+        _id: user ? user._id : null, 
         name: user ? user.name : "", 
         username: user ? user.username: "",
         password: user ? user.password: "",
@@ -55,7 +56,7 @@ export class UserComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
+      this.loadData()
     });
   }
 }

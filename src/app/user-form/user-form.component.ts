@@ -23,9 +23,22 @@ export class UserFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitLogin(): void {
-    console.log('DialogLoginComponent', this.data);
-    this.userService
+
+  onSubmit(id?: string): void {
+    if(id){
+      this.userService
+      .updateUser(this.data._id, this.data)
+      .subscribe(
+        (data) => {
+          this.dialogRef.close({ data: this.data });
+        },
+        (error) => {
+          console.log('Add user: failed', error);
+        }
+      );
+    }
+    else{
+      this.userService
       .addUser(this.data)
       .subscribe(
         (data) => {
@@ -35,5 +48,6 @@ export class UserFormComponent implements OnInit {
           console.log('Add user: failed', error);
         }
       );
+    }
   }
 }

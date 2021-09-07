@@ -1,5 +1,5 @@
 <div mat-dialog-content>
-  <p>Edit user</p>
+  <p>{{data._id ? 'Edit user' : 'Add new user'}}</p>
   <mat-form-field>
     <mat-label>Name</mat-label>
     <input matInput [(ngModel)]="data.name" />
@@ -28,7 +28,7 @@
   </mat-radio-group>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="submitLogin()">Submit</button>
+  <button mat-button (click)="onSubmit(data.isActive)">Submit</button>
   <!-- <button mat-button [mat-dialog-close]="data.username" cdkFocusInitial>
     Login
   </button> -->
