@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { MatRadioModule } from '@angular/material/radio';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -27,6 +27,7 @@ import { SalesOrderComponent } from './sales-order/sales-order.component';
 import { UserComponent } from './user/user.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UserFormComponent } from './user-form/user-form.component';
+import { LoginFormComponent } from './login-form/login-form.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { UserFormComponent } from './user-form/user-form.component';
     UserComponent,
     NotFoundComponent,
     UserFormComponent,
+    LoginFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,14 +53,14 @@ import { UserFormComponent } from './user-form/user-form.component';
     MatListModule,
     MatButtonModule,
     MatTableModule,
-    MatRadioModule,
+    MatCheckboxModule,
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
   ],
   providers: [],
-  entryComponents: [UserFormComponent],
+  entryComponents: [UserFormComponent, LoginFormComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

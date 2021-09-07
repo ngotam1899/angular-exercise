@@ -20,15 +20,11 @@
     <mat-label>Phone</mat-label>
     <input matInput [(ngModel)]="data.phone" />
   </mat-form-field>
-  <mat-radio-group>
-    <mat-radio-button name="is_admin" checked="{{data.isAdmin}}">Is admin</mat-radio-button>
-  </mat-radio-group>
-  <mat-radio-group>
-    <mat-radio-button name="is_active" checked="{{data.isActive}}">Is active</mat-radio-button>
-  </mat-radio-group>
+  <mat-checkbox [(ngModel)]="data.isAdmin" >Is admin</mat-checkbox>
+  <mat-checkbox [(ngModel)]="data.isActive" >Is active</mat-checkbox>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit(data.isActive)">Submit</button>
+  <button mat-button (click)="onSubmit()">Submit</button>
   <!-- <button mat-button [mat-dialog-close]="data.username" cdkFocusInitial>
     Login
   </button> -->

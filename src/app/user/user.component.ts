@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  private displayedColumns: string[] = ['index', 'name', 'username', 'email', 'is_active', 'action'];  
+  private displayedColumns: string[] = ['index', 'name', 'username', 'email', 'is_active', 'is_admin', 'action'];
   private dataSource : User[];
   public user: User;
 
@@ -44,13 +44,13 @@ export class UserComponent implements OnInit {
     const dialogRef = this.dialog.open(UserFormComponent, {
       width: '500px',
       data: {
-        _id: user ? user._id : null, 
-        name: user ? user.name : "", 
+        _id: user ? user._id : null,
+        name: user ? user.name : "",
         username: user ? user.username: "",
         password: user ? user.password: "",
-        email: user ? user.email : "", 
+        email: user ? user.email : "",
         phone: user ? user.phone: "",
-        isAdmin: user ? user.isAdmin : "", 
+        isAdmin: user ? user.isAdmin : "",
         isActive: user ? user.isActive: ""
       }
     });

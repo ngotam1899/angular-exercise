@@ -24,8 +24,8 @@ export class UserFormComponent implements OnInit {
   }
 
 
-  onSubmit(id?: string): void {
-    if(id){
+  onSubmit(): void {
+    if(this.data._id){
       this.userService
       .updateUser(this.data._id, this.data)
       .subscribe(

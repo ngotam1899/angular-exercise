@@ -3,13 +3,11 @@
     <button mat-icon-button>
       <mat-icon (click)="openLeftSide()">menu</mat-icon>
     </button>
-    <h1>Quản lý sinh viên</h1>
+    <h1>Customer Relationship Management</h1>
+    <div class="ml-auto">
+      <button mat-raised-button (click)="onHandleSignin()">Sign in</button>
+    </div>
   </mat-toolbar-row>
-  <!-- <mat-toolbar-row>
-    <span style="font-size: 12px;"
-      >Simple helps you easily manage your contacts</span
-    >
-  </mat-toolbar-row> -->
 </mat-toolbar>
 <mat-sidenav-container>
   <mat-sidenav #sidenav (closed)="closeLeftSide()">

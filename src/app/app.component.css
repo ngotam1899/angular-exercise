@@ -1,0 +1,27 @@
+.nav-height {
+  min-height: 50px !important;
+  height: 50px !important;
+}
+
+.content-move-right {
+  margin-left: 170px !important;
+  -webkit-transition: ease 0.2s;
+  transition: ease 0.2s;
+}
+
+.content-move-left {
+  margin-left: 10px !important;
+  -webkit-transition: ease 0.1s;
+  transition: ease 0.1s;
+}
+
+.active-link {
+  background: purple;
+  color: white;
+}
+
+.mat-button:hover {
+  background: purple;
+  color: white;
+}
+/*# sourceMappingURL=app.component.css.map */

@@ -52,11 +52,6 @@ export class UserService {
       .pipe(catchError(this.handleError));
   }
 
-  public deleteUser(userId: string) {
-    const url = `${this.REST_API_SERVER}/` + userId;
-    return this.httpClient.delete<any>(url).pipe(catchError(this.handleError));
-  }
-
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

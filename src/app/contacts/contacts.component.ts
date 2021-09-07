@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Contact } from '../shared/interface/contact.interface';
+import { ContactService } from '../shared/services/contact.service';
 
 @Component({
   selector: 'app-contacts',
@@ -6,10 +9,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./contacts.component.scss']
 })
 export class ContactsComponent implements OnInit {
+  private displayedColumns: string[] = ['index', 'name', 'username', 'email', 'is_active', 'is_admin', 'action'];
+  private dataSource : Contact[];
 
-  constructor() { }
+  constructor(
+    private contactService: ContactService,
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit() {
+
   }
 
 }
