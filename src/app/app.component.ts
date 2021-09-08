@@ -3,6 +3,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { LoginFormComponent } from './login-form/login-form.component'
 import { MatDialog } from '@angular/material/dialog'
 import { AuthService } from './shared/services/auth.service'
+import { CommonService } from './shared/services/common.service'
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,23 @@ import { AuthService } from './shared/services/auth.service'
 export class AppComponent implements OnInit {
   @ViewChild('sidenav', {static: true}) sidenav: MatSidenav;
   public isOpened = false;  // biến chuyển đổi hiệu ứng animate
+  public userName = ""
 
   constructor(
     public dialog: MatDialog,
-    public authService : AuthService
+    public authService : AuthService,
+    public commonService : CommonService
   ) {}
 
   ngOnInit(): void {
-
+    this.commonService.userName$.subscribe((userName) => {
+      this.userName = userName;
+    });
+    this.authService.getProfile().subscribe(
+      (data) => {
+        this.commonService.setUserName(data.data.user.username);
+      }
+    )
   }
 
   public openLeftSide() {

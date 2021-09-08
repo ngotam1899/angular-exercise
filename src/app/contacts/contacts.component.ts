@@ -14,6 +14,7 @@ export class ContactsComponent implements OnInit {
   public dataSource : Contact[];
   public contact: Contact;
   public err: string = '';
+  public keyword: string = '';
 
   constructor(
     private contactService: ContactService,
@@ -41,6 +42,12 @@ export class ContactsComponent implements OnInit {
     this.contactService.getContactDetail(contactId).subscribe((data) => {
       this.contact = data.data.contact;
       this.openDialog(this.contact)
+    });
+  }
+
+  onDelete(contactId: string){
+    this.contactService.deleteContact(contactId).subscribe((data) => {
+      this.loadData()
     });
   }
 

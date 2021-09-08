@@ -5,7 +5,13 @@
     </button>
     <h1>Customer Relationship Management</h1>
     <div class="ml-auto">
-      <button mat-raised-button (click)="onHandleSignin()">Sign in</button>
+      <button *ngIf="userName===''; else loggedIn" mat-raised-button (click)="onHandleSignin()">Sign in</button>
+      <ng-template #loggedIn>
+        <button mat-button [matMenuTriggerFor]="user">{{userName}}</button>
+        <mat-menu #user="matMenu">
+          <button mat-menu-item (click)="this.authService.logout()">Logout</button>
+        </mat-menu>
+      </ng-template>
     </div>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -19,10 +25,10 @@
         <mat-icon mat-list-icon>folder_shared</mat-icon> User Management
       </a>
       <a mat-list-item [routerLink]="['/sales-order']">
-        <mat-icon mat-list-icon>person</mat-icon> Sales Order
+        <mat-icon mat-list-icon>receipt</mat-icon> Sales Order
       </a>
       <a mat-list-item [routerLink]="['/contacts']">
-        <mat-icon mat-list-icon>person</mat-icon> Contacts
+        <mat-icon mat-list-icon>gavel</mat-icon> Contacts
       </a>
       <a mat-list-item (click)="sidenav.toggle()" mat-list-item>
         <mat-icon mat-list-icon>close</mat-icon> Close

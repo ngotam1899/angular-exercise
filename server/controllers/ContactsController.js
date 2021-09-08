@@ -9,50 +9,82 @@ This model will interact with database to store or update data.
 */
 class ContactsController {
     // [POST] /contacts - function to store a contact information
-    storeContact(req, res){
-        setTimeout(() => {
-            try{
-                const contacts = new Contacts(req.body);
-                contacts
-                    .save()
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Add contact successfully');
-                    });
-    
-            }catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    storeContact = async (req, res) => {
+      try{
+        const contacts = new Contacts(req.body);
+        await contacts.save()
+        return apiResponse.successResponse(res, 'Add contact successfully');
+      }catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
-    // [POST] /contacts/list - function to get a list of contacts information
-    getListOfContacts(req, res){
-        try{
-            const isAdmin = req.isAdmin,
-                name = req.name;
-            if(!isAdmin){
-                Contacts
-                    .find({assignedTo : name})
-                    .then((contacts) => {
-                        if(contacts.length > 0)
-                            return apiResponse.successResponseWithData(res, 'Success', {contacts: mutipleMongooseToObject(contacts)});
-                        else
-                            return apiResponse.successResponseWithData(res, 'Success', {contacts:[]});
-                    });
-            }
-            else {
-                Contacts
-                    .find({})
-                    .then((contacts) => {
-                        if(contacts.length > 0)
-                            return apiResponse.successResponseWithData(res, 'Success', {contacts: mutipleMongooseToObject(contacts)});
-                        else
-                            return apiResponse.successResponseWithData(res, 'Success', {contacts:[]});
-                    });
-            }
-        }catch(err){
-            return apiResponse.ErrorResponse(res, err);
+    // [GET] /contacts/list - function to get a list of contacts information
+    getListOfContacts  = async (req, res) => {
+      try{
+        const condition = {};
+        let limit = 10;
+        let page = 0;
+        let total = 0;
+        if (req.query.keyword != undefined && req.query.keyword != '') {
+          let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+          condition.contactName = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
         }
+        /* Pagination */
+        if (req.query.limit != undefined && req.query.limit != '') {
+          const number_limit = parseInt(req.query.limit);
+          if (number_limit && number_limit > 0) {
+            limit = number_limit;
+          }
+        }
+        if (req.query.page != undefined && req.query.page != '') {
+          const number_page = parseInt(req.query.page);
+          if (number_page && number_page > 0) {
+            page = number_page;
+          }
+        }
+        /* Pagination */
+        const isAdmin = req.isAdmin; 
+        if(!isAdmin){
+          condition.assignedTo = req.name;
+          const contacts = await Contacts.find(condition)
+          .limit(limit)
+			    .skip(limit * page);
+          total = await Contacts.countDocuments(condition);
+          if(contacts.length > 0) return apiResponse.successResponseWithData(res, 'Success', {
+            contacts: mutipleMongooseToObject(contacts), 
+            total, 
+            page,
+				    limit
+          });
+          else return apiResponse.successResponseWithData(res, 'Success', {
+            contacts:[],
+            total: 0,
+            page,
+				    limit
+          });
+        }
+        else {
+          const contacts = await Contacts.find(condition)
+          .limit(limit)
+			    .skip(limit * page);
+          total = await Contacts.countDocuments(condition);
+          if(contacts.length > 0) return apiResponse.successResponseWithData(res, 'Success', {
+            contacts: mutipleMongooseToObject(contacts),
+            total, 
+            page,
+				    limit
+          });
+          else return apiResponse.successResponseWithData(res, 'Success', {
+            contacts:[],
+            total: 0,
+            page,
+				    limit
+          });
+        }
+      }catch(err){
+          return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [GET] /contacts/:id - function to get a contact information by contact ID

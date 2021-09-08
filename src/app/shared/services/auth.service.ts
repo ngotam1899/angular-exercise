@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { CommonService } from './common.service'
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -16,7 +17,8 @@ export class AuthService {
 
   constructor(
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    public commonService : CommonService
   ) {}
 
   private httpOptions = {
@@ -29,6 +31,7 @@ export class AuthService {
 
   public setToken(token: string) {
     localStorage.setItem('token', token);
+    window.location.reload()
   }
 
   public removeToken() {
@@ -46,6 +49,7 @@ export class AuthService {
   public logout() {
     this.removeToken();
     this.router.navigate(['/']);
+    this.commonService.deleteUserName()
   }
 
   public authLogin(username: string, password: string): Observable<any> {
@@ -53,6 +57,14 @@ export class AuthService {
     return (
       this.httpClient
         .post<any>(`${this.REST_API_SERVER}/signin`, payload, this.httpOptions)
+        .pipe(catchError(this.handleError))
+    );
+  }
+
+  public getProfile(): Observable<any> {
+    return (
+      this.httpClient
+        .get<any>(`${this.REST_API_SERVER}/userProfile`, this.httpOptions)
         .pipe(catchError(this.handleError))
     );
   }

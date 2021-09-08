@@ -26,9 +26,9 @@ export class ContactService {
   constructor(private httpClient: HttpClient) {}
 
   public getContactList() {
-    const url = `${this.REST_API_SERVER}/list`;
+    const url = `${this.REST_API_SERVER}`;
     return this.httpClient
-      .post<any>(url, null, this.httpOptions)
+      .get<any>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

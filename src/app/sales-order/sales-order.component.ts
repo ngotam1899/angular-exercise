@@ -43,6 +43,12 @@ export class SalesOrderComponent implements OnInit {
     });
   }
 
+  onDelete(salesOrderId: string){
+    this.salesOrderService.deleteSalesOrder(salesOrderId).subscribe((data) => {
+      this.loadData()
+    });
+  }
+
   openDialog(saleOrder?: SalesOrder): void {
     const dialogRef = this.dialog.open(SalesOrderFormComponent, {
       width: '500px',

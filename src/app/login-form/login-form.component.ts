@@ -4,6 +4,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { AuthService } from '../shared/services/auth.service';
+import { CommonService } from '../shared/services/common.service';
 
 export interface Authorization {
   username: string;
@@ -21,6 +22,7 @@ export class LoginFormComponent implements OnInit {
   constructor(
     public authService: AuthService,
     public dialogRef: MatDialogRef<LoginFormComponent>,
+    public commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: Authorization
   ) { }
 
@@ -33,12 +35,10 @@ export class LoginFormComponent implements OnInit {
       .authLogin(this.data.username, this.data.password)
       .subscribe(
         (data) => {
-          console.log('DialogLoginComponent: login, data = ', data);
           if (Object.prototype.hasOwnProperty.call(data, 'error')) {
             console.log('DialogLoginComponent: login: error', data);
           } else {
             this.data.token = data;
-            console.log('DialogLoginComponent: this.data', this.data);
             this.dialogRef.close({ data: this.data });
           }
         },

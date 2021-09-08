@@ -1,3 +1,59 @@
 <div class="container">
   <h1>Dashboard</h1>
+  <div class="row my-2">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>20</mat-card-title>
+          <mat-card-subtitle>All contracts</mat-card-subtitle>
+          <button mat-icon-button [matMenuTriggerFor]="menuContract" class="ml-auto">
+            <mat-icon>gavel</mat-icon>
+          </button>
+          <mat-menu #menuContract="matMenu">
+            <button mat-menu-item>All contracts</button>
+            <button mat-menu-item>Existing Customer</button>
+            <button mat-menu-item>Partner</button>
+            <button mat-menu-item>Conference</button>
+            <button mat-menu-item>Website</button>
+            <button mat-menu-item>Word of mouth</button>
+            <button mat-menu-item>Other</button>
+          </mat-menu>
+        </mat-card-header>
+        <mat-card-content>
+          <button mat-button>Number of contacts by All contracts</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>20</mat-card-title>
+          <mat-card-subtitle>All sales</mat-card-subtitle>
+          <button mat-icon-button [matMenuTriggerFor]="menuSale" class="ml-auto">
+            <mat-icon>receipt</mat-icon>
+          </button>
+          <mat-menu #menuSale="matMenu">
+            <button mat-menu-item>All sales</button>
+            <button mat-menu-item>Created</button>
+            <button mat-menu-item>Approved</button>
+            <button mat-menu-item>Delivered</button>
+            <button mat-menu-item>Delivered</button>
+          </mat-menu>
+        </mat-card-header>
+        <mat-card-content>
+          <button mat-button>Number of sales by All sales</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <h3>New contacts in the last 7 days</h3>
+      
+    </div>
+    <div class="col-12 col-md-6">
+      <h3>New sales orders in the last 7 days</h3>
+    </div>
+  </div>
 </div>

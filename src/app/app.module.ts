@@ -14,6 +14,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
@@ -62,6 +64,9 @@ import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.com
     MatCheckboxModule,
     MatDialogModule,
     MatCardModule,
+    MatMenuModule,
+    MatDividerModule,
+
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
