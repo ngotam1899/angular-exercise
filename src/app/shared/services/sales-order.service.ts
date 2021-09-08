@@ -26,14 +26,14 @@ export class SalesOrderService {
   constructor(private httpClient: HttpClient) {}
 
   public getSalesOrderList() {
-    const url = `${this.REST_API_SERVER}`;
+    const url = `${this.REST_API_SERVER}/list`;
     return this.httpClient
-      .get<any>(url, this.httpOptions)
+      .post<any>(url, null, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  public getSalesOrderDetail(salesOrderId: number) {
-    const url = `${this.REST_API_SERVER}` + salesOrderId;
+  public getSalesOrderDetail(salesOrderId: string) {
+    const url = `${this.REST_API_SERVER}/` + salesOrderId;
     return this.httpClient
       .get<any>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -47,14 +47,14 @@ export class SalesOrderService {
   }
 
   public updateSalesOrder(salesOrderId: string, data: SalesOrder) {
-    const url = `${this.REST_API_SERVER}` + salesOrderId;
+    const url = `${this.REST_API_SERVER}/` + salesOrderId;
     return this.httpClient
       .put<any>(url, data, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
   public deleteSalesOrder(salesOrderId: string) {
-    const url = `${this.REST_API_SERVER}` + salesOrderId;
+    const url = `${this.REST_API_SERVER}/` + salesOrderId;
     return this.httpClient.delete<any>(url).pipe(catchError(this.handleError));
   }
 

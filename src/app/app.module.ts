@@ -11,13 +11,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
@@ -28,6 +29,9 @@ import { UserComponent } from './user/user.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { AuthHeaderInterceptor } from './interceptors/header.interceptor';
+import { ContactsFormComponent } from './contacts-form/contacts-form.component';
+import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +43,8 @@ import { LoginFormComponent } from './login-form/login-form.component';
     NotFoundComponent,
     UserFormComponent,
     LoginFormComponent,
+    ContactsFormComponent,
+    SalesOrderFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,12 +61,15 @@ import { LoginFormComponent } from './login-form/login-form.component';
     MatTableModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
   ],
-  providers: [],
-  entryComponents: [UserFormComponent, LoginFormComponent],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true }
+  ],
+  entryComponents: [UserFormComponent, LoginFormComponent, ContactsFormComponent, SalesOrderFormComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

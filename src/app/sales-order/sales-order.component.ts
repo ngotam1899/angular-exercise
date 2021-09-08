@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SalesOrder } from '../shared/interface/sales-order.interface';
-import { ContactService } from '../shared/services/contact.service';
+import { SalesOrderService } from '../shared/services/sales-order.service';
+import { SalesOrderFormComponent } from '../sales-order-form/sales-order-form.component'
 
 @Component({
   selector: 'app-sales-order',
@@ -9,15 +10,56 @@ import { ContactService } from '../shared/services/contact.service';
   styleUrls: ['./sales-order.component.scss']
 })
 export class SalesOrderComponent implements OnInit {
-  private displayedColumns: string[] = ['index', 'name', 'username', 'email', 'is_active', 'is_admin', 'action'];
-  private dataSource : SalesOrder[];
+  public displayedColumns: string[] = ['index', 'subject', 'contactName', 'status', 'total', 'actions'];
+  public dataSource : SalesOrder[];
+  public err: string = '';
+  public saleOrder: SalesOrder;
 
   constructor(
-    private contactService: ContactService,
+    private salesOrderService: SalesOrderService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit() {
+    this.loadData();
   }
 
+  loadData() {
+    this.salesOrderService.getSalesOrderList().subscribe((data) => {
+      this.dataSource = data.data.salesOrder;
+    }, (err) => {
+      this.err = err;
+    });
+  }
+
+  onAdd(){
+    this.openDialog()
+  }
+
+  onUpdate(salesOrderId: string){
+    this.salesOrderService.getSalesOrderDetail(salesOrderId).subscribe((data) => {
+      this.saleOrder = data.data.saleOrder;
+      this.openDialog(this.saleOrder)
+    });
+  }
+
+  openDialog(saleOrder?: SalesOrder): void {
+    const dialogRef = this.dialog.open(SalesOrderFormComponent, {
+      width: '500px',
+      data: {
+        _id: saleOrder ? saleOrder._id : null,
+        subject: saleOrder ? saleOrder.subject : "",
+        contactName: saleOrder ? saleOrder.contactName: "",
+        status: saleOrder ? saleOrder.status: "",
+        total: saleOrder ? saleOrder.total : "",
+        assignedTo: saleOrder ? saleOrder.assignedTo: "",
+        creator: saleOrder ? saleOrder.creator : "",
+        description: saleOrder ? saleOrder.description: ""
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadData()
+    });
+  }
 }

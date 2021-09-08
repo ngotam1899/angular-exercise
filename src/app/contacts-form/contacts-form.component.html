@@ -1,0 +1,51 @@
+<div mat-dialog-content>
+  <h3>{{data._id ? 'Edit contact' : 'Add new contact'}}</h3>
+  <mat-form-field>
+    <mat-label>Contact name</mat-label>
+    <input matInput [(ngModel)]="data.contactName" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Salutation</mat-label>
+    <input matInput [(ngModel)]="data.salutation" />
+  </mat-form-field>
+    <mat-form-field>
+    <mat-label>Mobile phone</mat-label>
+    <input matInput [(ngModel)]="data.mobilePhone"/>
+  </mat-form-field>
+ <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input matInput [(ngModel)]="data.email" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Organization</mat-label>
+    <input matInput [(ngModel)]="data.organization" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>DOB</mat-label>
+    <input matInput [(ngModel)]="data.dob" />
+  </mat-form-field>
+   <mat-form-field>
+    <mat-label>Lead source</mat-label>
+    <input matInput [(ngModel)]="data.leadSrc" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Assigned to</mat-label>
+    <input matInput [(ngModel)]="data.assignedTo" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Creator</mat-label>
+    <input matInput [(ngModel)]="data.creator" />
+  </mat-form-field>
+   <mat-form-field>
+    <mat-label>Address</mat-label>
+    <input matInput [(ngModel)]="data.address" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <input matInput [(ngModel)]="data.description" />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()" mat-raised-button>Submit</button>
+  <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
+</div>

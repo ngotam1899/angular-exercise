@@ -1,5 +1,5 @@
 <div mat-dialog-content>
-  <p>{{data._id ? 'Edit user' : 'Add new user'}}</p>
+  <h3>{{data._id ? 'Edit user' : 'Add new user'}}</h3>
   <mat-form-field>
     <mat-label>Name</mat-label>
     <input matInput [(ngModel)]="data.name" />
@@ -10,7 +10,7 @@
   </mat-form-field>
     <mat-form-field>
     <mat-label>Password</mat-label>
-    <input matInput [(ngModel)]="data.password" disable/>
+    <input matInput [(ngModel)]="data.password" [disabled]="data.password !==''"/>
   </mat-form-field>
  <mat-form-field>
     <mat-label>Email</mat-label>
@@ -24,8 +24,6 @@
   <mat-checkbox [(ngModel)]="data.isActive" >Is active</mat-checkbox>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Submit</button>
-  <!-- <button mat-button [mat-dialog-close]="data.username" cdkFocusInitial>
-    Login
-  </button> -->
+  <button mat-button (click)="onSubmit()" mat-raised-button>Submit</button>
+  <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
 </div>

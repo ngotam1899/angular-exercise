@@ -21,19 +21,19 @@ export class ContactService {
       // Authorization: 'Basic ' + btoa('username:password'),
     }),
   };
-  private REST_API_SERVER = 'http://localhost:4040/sales_order';
+  private REST_API_SERVER = 'http://localhost:4040/contacts';
 
   constructor(private httpClient: HttpClient) {}
 
   public getContactList() {
-    const url = `${this.REST_API_SERVER}`;
+    const url = `${this.REST_API_SERVER}/list`;
     return this.httpClient
-      .get<any>(url, this.httpOptions)
+      .post<any>(url, null, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  public getContactDetail(contactId: number) {
-    const url = `${this.REST_API_SERVER}` + contactId;
+  public getContactDetail(contactId: string) {
+    const url = `${this.REST_API_SERVER}/` + contactId;
     return this.httpClient
       .get<any>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -47,14 +47,14 @@ export class ContactService {
   }
 
   public updateContact(contactId: string, data: Contact) {
-    const url = `${this.REST_API_SERVER}` + contactId;
+    const url = `${this.REST_API_SERVER}/` + contactId;
     return this.httpClient
       .put<any>(url, data, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
   public deleteContact(contactId: string) {
-    const url = `${this.REST_API_SERVER}` + contactId;
+    const url = `${this.REST_API_SERVER}/` + contactId;
     return this.httpClient.delete<any>(url).pipe(catchError(this.handleError));
   }
 
@@ -65,8 +65,8 @@ export class ContactService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      return throwError(
+        `Backend returned code ${error.status}, ` + `body was: ${error.error.message}`
       );
     }
     // return an observable with a Contact-facing error message

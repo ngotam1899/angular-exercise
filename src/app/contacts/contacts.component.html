@@ -1,1 +1,56 @@
 <h1>Contacts</h1>
+<div *ngIf="!err; else throwError">
+  <button mat-raised-button color="accent" (click)="onAdd()">Add a contact</button>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Index Column -->
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+    </ng-container>
+
+    <!-- ContactName Column -->
+    <ng-container matColumnDef="contactName">
+      <th mat-header-cell *matHeaderCellDef> Contact name </th>
+      <td mat-cell *matCellDef="let element"> {{element.contactName}} </td>
+    </ng-container>
+
+    <!-- Salutation Column -->
+    <ng-container matColumnDef="salutation">
+      <th mat-header-cell *matHeaderCellDef> Salutation </th>
+      <td mat-cell *matCellDef="let element"> {{element.salutation}} </td>
+    </ng-container>
+
+    <!-- MobilePhone Column -->
+    <ng-container matColumnDef="mobilePhone">
+      <th mat-header-cell *matHeaderCellDef> Mobile phone </th>
+      <td mat-cell *matCellDef="let element"> {{element.mobilePhone}} </td>
+    </ng-container>
+
+
+    <!-- LeadSrc Column -->
+    <ng-container matColumnDef="leadSrc">
+      <th mat-header-cell *matHeaderCellDef> Lead source </th>
+      <td mat-cell *matCellDef="let element"> {{element.leadSrc}} </td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-raised-button color="primary" (click)="onUpdate(element._id)">Edit</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</div>
+<ng-template #throwError>
+  <div>{{err}}</div>
+</ng-template>
+

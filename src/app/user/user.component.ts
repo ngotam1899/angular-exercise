@@ -10,8 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  private displayedColumns: string[] = ['index', 'name', 'username', 'email', 'is_active', 'is_admin', 'action'];
-  private dataSource : User[];
+  public displayedColumns: string[] = ['index', 'name', 'username', 'email', 'isActive', 'isAdmin', 'action'];
+  public dataSource : User[];
   public user: User;
 
   constructor(

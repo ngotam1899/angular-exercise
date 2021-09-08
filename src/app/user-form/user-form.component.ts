@@ -1,4 +1,3 @@
-
 import { Component, Inject, OnInit } from '@angular/core';
 import { User } from '../shared/interface/user.interface';
 import { UserService } from '../shared/services/user.service';
