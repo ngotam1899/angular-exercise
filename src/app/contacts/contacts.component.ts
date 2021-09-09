@@ -3,6 +3,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Contact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
 import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
+import { ActivatedRoute, Router } from '@angular/router';
+
+interface IParams {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  leadSrc?: string;
+}
 
 @Component({
   selector: 'app-contacts',
@@ -12,23 +20,37 @@ import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
 export class ContactsComponent implements OnInit {
   public displayedColumns: string[] = ['index', 'contactName', 'salutation', 'mobilePhone', 'leadSrc', 'actions'];
   public dataSource : Contact[];
-  public contact: Contact;
-  public err: string = '';
-  public keyword: string = '';
+  public contact: Contact;          // Contact detail
+  public err: string = '';          // Error display
+  public keyword: string = '';      // Keyword to search
+  public leadSrc: string            // Leader source
+  public queryParams: IParams;      // Query parameters
+  public total: number;             // Total data
+  public limit: number = 8;         // (Pagination) Limit data in one page
+  public page: number = 0;          // (Pagination) Current page
 
   constructor(
     private contactService: ContactService,
     public dialog: MatDialog,
-
+    public activatedRoute: ActivatedRoute,
+    public router: Router,
   ) { }
 
   ngOnInit() {
-    this.loadData()
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.loadData(params);
+      this.queryParams = params;
+      this.keyword = params['keyword'];
+      this.page = params['page'];
+      this.limit = params['limit'];
+      this.leadSrc = params['leadSrc'];
+    })
   }
 
-  loadData(){
-    this.contactService.getContactList().subscribe((data) => {
+  loadData(queryParams? : IParams){
+    this.contactService.getContactList(queryParams).subscribe((data) => {
       this.dataSource = data.data.contacts;
+      this.total = data.data.total;
     }, (err) => {
       this.err = err;
     });
@@ -51,6 +73,29 @@ export class ContactsComponent implements OnInit {
     });
   }
 
+  onSearch(event){
+    this.handleUpdateFilter({
+      keyword: event.target.value,
+      page: 0
+    })
+  }
+
+  onPageChange(event) {
+    this.handleUpdateFilter({
+      limit: event.pageSize || 0,
+      page: event.pageIndex
+    })
+  }
+
+  handleUpdateFilter = (data: any) => {
+    const pathname = location.pathname;
+    this.queryParams = {
+      ...this.queryParams,
+      ...data,
+    };
+    this.router.navigate([`${pathname}`], { queryParams : this.queryParams })
+  };
+
   openDialog(contact?: Contact): void {
     const dialogRef = this.dialog.open(ContactsFormComponent, {
       width: '500px',
@@ -71,7 +116,7 @@ export class ContactsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadData()
+      this.loadData(this.queryParams)
     });
   }
 }

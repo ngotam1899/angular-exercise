@@ -2,9 +2,9 @@ const Contacts = require('../models/Contacts');
 const  { mutipleMongooseToObject } = require('../helpers/mongoose');
 const apiResponse = require('../helpers/apiResponse');
 
-/* 
+/*
 ContactsController contains function handlers to handle request from Contacts page.
-It will recieve the data from client, send to its model and vice versa. 
+It will recieve the data from client, send to its model and vice versa.
 This model will interact with database to store or update data.
 */
 class ContactsController {
@@ -19,16 +19,19 @@ class ContactsController {
       }
     }
 
-    // [GET] /contacts/list - function to get a list of contacts information
+    // [GET] /contacts - function to get a list of contacts information
     getListOfContacts  = async (req, res) => {
       try{
         const condition = {};
-        let limit = 10;
+        let limit = 8;
         let page = 0;
         let total = 0;
         if (req.query.keyword != undefined && req.query.keyword != '') {
           let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
           condition.contactName = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
+        }
+        if (req.query.leadSrc != undefined && req.query.leadSrc != '') {
+          condition.leadSrc = req.query.leadSrc;
         }
         /* Pagination */
         if (req.query.limit != undefined && req.query.limit != '') {
@@ -44,7 +47,7 @@ class ContactsController {
           }
         }
         /* Pagination */
-        const isAdmin = req.isAdmin; 
+        const isAdmin = req.isAdmin;
         if(!isAdmin){
           condition.assignedTo = req.name;
           const contacts = await Contacts.find(condition)
@@ -52,8 +55,8 @@ class ContactsController {
 			    .skip(limit * page);
           total = await Contacts.countDocuments(condition);
           if(contacts.length > 0) return apiResponse.successResponseWithData(res, 'Success', {
-            contacts: mutipleMongooseToObject(contacts), 
-            total, 
+            contacts: mutipleMongooseToObject(contacts),
+            total,
             page,
 				    limit
           });
@@ -71,7 +74,7 @@ class ContactsController {
           total = await Contacts.countDocuments(condition);
           if(contacts.length > 0) return apiResponse.successResponseWithData(res, 'Success', {
             contacts: mutipleMongooseToObject(contacts),
-            total, 
+            total,
             page,
 				    limit
           });
@@ -128,7 +131,7 @@ class ContactsController {
                     .then(() => {
                         return apiResponse.successResponse(res, 'Delete contact successfully');
                     });
-    
+
             }catch(err){
                 return apiResponse.ErrorResponse(res, err);
             }

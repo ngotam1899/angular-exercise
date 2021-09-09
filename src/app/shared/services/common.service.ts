@@ -6,19 +6,21 @@ import { User } from '../interface/user.interface';
   providedIn: 'root'
 })
 export class CommonService {
-  public userName : string = "";
-  public userName$ = new BehaviorSubject<string>("");
+  public user : User | any;
+  public user$ = new BehaviorSubject<User | any>({});
 
   constructor() { }
 
-  public setUserName(userName: string) {
-    this.userName = userName;
-    this.userName$.next(userName);
+  public setUser(user: User) {
+    this.user = user;
+    this.user$.next(user);
     // Thông báo vs những subscription thay đổi giá trị total mới
   }
 
   public deleteUserName() {
-    this.userName = "";
-    this.userName$.next(this.userName);
+    this.user = {
+      username: ''
+    };
+    this.user$.next(this.user);
   }
 }

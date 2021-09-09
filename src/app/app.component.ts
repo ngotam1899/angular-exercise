@@ -22,12 +22,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.commonService.userName$.subscribe((userName) => {
-      this.userName = userName;
+    this.commonService.user$.subscribe((user) => {
+      this.userName = user.username;
     });
     this.authService.getProfile().subscribe(
       (data) => {
-        this.commonService.setUserName(data.data.user.username);
+        this.commonService.setUser(data.data.user);
       }
     )
   }
@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
     this.openDialog()
   }
 
-  openDialog(): void { 
+  openDialog(): void {
     const dialogRef = this.dialog.open(LoginFormComponent, {
       width: '300px',
       data: {

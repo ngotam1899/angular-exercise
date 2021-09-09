@@ -6,23 +6,36 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Contact name</mat-label>
-    <input matInput [(ngModel)]="data.contactName" />
+    <input matInput
+          [(ngModel)]="data.contactName"
+          aria-label="State"
+          [matAutocomplete]="auto"
+          [formControl]="stateCtrl">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let state of filteredStates | async" [value]="state.contactName">
+        {{state.contactName}}
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
     <mat-form-field>
     <mat-label>Status</mat-label>
-    <input matInput [(ngModel)]="data.status"/>
+    <mat-select [(ngModel)]="data.status">
+      <mat-option *ngFor="let status of statuses" [value]="status.value">
+        {{status.viewValue}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
- <mat-form-field>
+  <mat-form-field>
     <mat-label>Total</mat-label>
     <input matInput [(ngModel)]="data.total" />
   </mat-form-field>
   <mat-form-field>
     <mat-label>Assigned to</mat-label>
-    <input matInput [(ngModel)]="data.assignedTo" />
+    <input matInput [(ngModel)]="data.assignedTo" disabled/>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Creator</mat-label>
-    <input matInput [(ngModel)]="data.creator" />
+    <input matInput [(ngModel)]="data.creator || creator" disabled />
   </mat-form-field>
    <mat-form-field>
     <mat-label>Description</mat-label>

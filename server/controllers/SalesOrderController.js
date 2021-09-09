@@ -1,58 +1,100 @@
 const SalesOrder = require('../models/SalesOrder');
+const Contact = require('../models/Contacts');
 const  { mutipleMongooseToObject } = require('../helpers/mongoose');
 const apiResponse = require('../helpers/apiResponse');
 
-/* 
+/*
 SalesOrderController contains function handlers to handle request from Sales order page.
-It will recieve the data from client, send to its model and vice versa. 
+It will recieve the data from client, send to its model and vice versa.
 This model will interact with database to store or update data.
 */
 class SalesOrderController {
     // [POST] /sales_order - function to store a sale order information
-    storeSalesOrder(req, res){
-        setTimeout(() => {
-            try{
-                const saleOrder = new SalesOrder(req.body);
-                saleOrder
-                    .save()
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Add sale order successfully');
-                    });
-    
-            }catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    storeSalesOrder = async(req, res) =>{
+      const { contactName } = req.body;
+      const contact = await Contact.findOne({ contactName })
+      let saleOrder = new SalesOrder(req.body);
+      saleOrder.assignedTo = contact.assignedTo;
+      await saleOrder.save()
+      return apiResponse.successResponse(res, 'Add sale order successfully');
     }
 
-    // [POST] /sales_order/list - function to get a list of sales order information
-    getListOfSalesOrders(req, res){
-        try{
-            const isAdmin = req.isAdmin,
-                name = req.name;
-            if(!isAdmin){
-                SalesOrder
-                    .find({assignedTo : name})
-                    .then((salesOrder) => {
-                        if(salesOrder.length > 0)
-                            return apiResponse.successResponseWithData(res, 'Success', {salesOrder: mutipleMongooseToObject(salesOrder)});
-                        else
-                            return apiResponses.successResponseWithData(res, 'Success', []);
-                    });
-            }
-            else{
-                SalesOrder
-                    .find({})
-                    .then((salesOrder) => {
-                        if(salesOrder.length > 0)
-                            return apiResponse.successResponseWithData(res, 'Success', {salesOrder: mutipleMongooseToObject(salesOrder)});
-                        else
-                            return apiResponses.successResponseWithData(res, 'Success', []);
-                    });
-            }
-        }catch(err){
-            return apiResponse.ErrorResponse(res, err);
+    // [GET] /sales_order - function to get a list of sales order information
+    getListOfSalesOrders = async (req, res) =>{
+      try{
+        const condition = {};
+        let limit = 8;
+        let page = 0;
+        let total = 0;
+        if (req.query.keyword != undefined && req.query.keyword != '') {
+          let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+          condition.subject = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
         }
+        if (req.query.status != undefined && req.query.status != '') {
+          condition.status = req.query.status;
+        }
+        /* Pagination */
+        if (req.query.limit != undefined && req.query.limit != '') {
+          const number_limit = parseInt(req.query.limit);
+          if (number_limit && number_limit > 0) {
+            limit = number_limit;
+          }
+        }
+        if (req.query.page != undefined && req.query.page != '') {
+          const number_page = parseInt(req.query.page);
+          if (number_page && number_page > 0) {
+            page = number_page;
+          }
+        }
+        /* Pagination */
+        const isAdmin = req.isAdmin;
+        if(!isAdmin){
+          condition.assignedTo = req.name;
+          let salesOrder = await SalesOrder
+            .find(condition)
+            .limit(limit)
+            .skip(limit * page);
+          total = await SalesOrder.countDocuments(condition);
+          if(salesOrder.length > 0)
+            return apiResponse.successResponseWithData(res, 'Success', {
+              salesOrder: mutipleMongooseToObject(salesOrder),
+              total,
+              page,
+              limit
+            });
+          else
+            return apiResponses.successResponseWithData(res, 'Success', {
+              salesOrder:[],
+              total: 0,
+              page,
+              limit
+            });
+        }
+        else{
+          let salesOrder = await SalesOrder
+            .find(condition)
+            .limit(limit)
+			      .skip(limit * page);
+          total = await SalesOrder.countDocuments(condition);
+          if(salesOrder.length > 0)
+            return apiResponse.successResponseWithData(res, 'Success', {
+              salesOrder: mutipleMongooseToObject(salesOrder),
+              total,
+              page,
+              limit
+            });
+          else
+            return apiResponses.successResponseWithData(res, 'Success', {
+              salesOrder:[],
+              total: 0,
+              page,
+              limit
+            });
+        }
+      }catch(err){
+        console.log(err);
+        //return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [GET] /sales_order/:id - function to get a sale order information by sale order ID
@@ -96,7 +138,7 @@ class SalesOrderController {
                     .then(() => {
                         return apiResponse.successResponse(res, 'Delete sale order successfully');
                     });
-    
+
             } catch(err){
                 return apiResponse.ErrorResponse(res, err);
             }
@@ -113,7 +155,7 @@ class SalesOrderController {
                     .then(() => {
                         return apiResponse.successResponse(res, 'Delete sales orders successfully');
                     });
-    
+
             } catch(err){
                 return apiResponse.ErrorResponse(res, err);
             }

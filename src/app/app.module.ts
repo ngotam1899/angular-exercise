@@ -16,6 +16,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
@@ -34,6 +37,8 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { AuthHeaderInterceptor } from './interceptors/header.interceptor';
 import { ContactsFormComponent } from './contacts-form/contacts-form.component';
 import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.component';
+import { LeadSrcPipe } from './shared/pipe/lead-src.pipe';
+import { StatusPipe } from './shared/pipe/status.pipe';
 
 @NgModule({
   declarations: [
@@ -47,6 +52,8 @@ import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.com
     LoginFormComponent,
     ContactsFormComponent,
     SalesOrderFormComponent,
+    LeadSrcPipe,
+    StatusPipe,
   ],
   imports: [
     BrowserModule,
@@ -66,6 +73,9 @@ import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.com
     MatCardModule,
     MatMenuModule,
     MatDividerModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatAutocompleteModule,
 
     FormsModule,
     ReactiveFormsModule,

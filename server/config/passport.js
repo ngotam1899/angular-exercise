@@ -14,6 +14,9 @@ const localLogin = new LocalStrategy(
             return done(null, false, { message : 'Password incorrect!'});
         }
 
+        if(user.isActive === false){
+          return done(null, false, { message : 'This account has not activated yet!' });
+        }
         done(null, user);
     }
 );

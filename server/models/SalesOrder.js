@@ -9,7 +9,7 @@ const SalesOrder = new Schema({
     // (0) Created, (1) Approved, (2) Delivered, (3) Cancelled
     total: { type: String, required: true },
     assignedTo: { type: String, ref: 'User', required: true },
-    creator: { type: String, default: 'admin' },
+    creator: { type: String, ref: 'User', required: true },
     description: { type: String, required: false },
     createdTime: { type: Date, default: new Date() },
     updatedTime: { type: Date, default: new Date() },

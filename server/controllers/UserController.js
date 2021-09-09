@@ -2,9 +2,9 @@ const User = require('../models/User');
 const  { mutipleMongooseToObject } = require('../helpers/mongoose');
 const apiResponse = require('../helpers/apiResponse');
 
-/* 
+/*
 UserController contains function handlers to handle request from User management page.
-It will recieve the data from client, send to its model and vice versa. 
+It will recieve the data from client, send to its model and vice versa.
 This model will interact with database to store or update data.
 */
 
@@ -15,13 +15,13 @@ class UserController {
             try{
                 let userInfo = req.body;
                 const user = new User(userInfo);
-    
+
                 user
                     .save()
                     .then(() => {
                         return apiResponse.successResponse(res, 'Add user successfully');
                     });
-    
+
             }catch(err){
                 return apiResponse.ErrorResponse(res, err);
             }
@@ -29,19 +29,48 @@ class UserController {
     }
 
     // [GET] /user_management - function to get list of user
-    userList(req, res){
-        try{
-            User
-                .find({})
-                .then((users) => {
-                    if(users.length > 0)
-                        return apiResponse.successResponseWithData(res, 'Success', {users: mutipleMongooseToObject(users)});
-                    else
-                        return apiResponse.successResponseWithData(res, 'Success', {users:[]});
-                });
-
-        }catch(err){
-            return apiResponse.ErrorResponse(res, err);
+    userList = async (req, res) => {
+      try{
+        const condition = {};
+        let limit = 8;
+        let page = 0;
+        let total = 0;
+        if (req.query.keyword != undefined && req.query.keyword != '') {
+          let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+          condition.username = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
+        }
+        /* Pagination */
+        if (req.query.limit != undefined && req.query.limit != '') {
+          const number_limit = parseInt(req.query.limit);
+          if (number_limit && number_limit > 0) {
+            limit = number_limit;
+          }
+        }
+        if (req.query.page != undefined && req.query.page != '') {
+          const number_page = parseInt(req.query.page);
+          if (number_page && number_page > 0) {
+            page = number_page;
+          }
+        }
+        /* Pagination */
+        const users = await User.find(condition)
+        total = await User.countDocuments(condition);
+        if(users.length > 0)
+          return apiResponse.successResponseWithData(res, 'Success', {
+            users: mutipleMongooseToObject(users),
+            total,
+            page,
+				    limit
+          });
+        else
+          return apiResponse.successResponseWithData(res, 'Success', {
+            users:[],
+            total,
+            page,
+				    limit
+          });
+        } catch(err){
+          return apiResponse.ErrorResponse(res, err);
         }
     }
 
@@ -82,13 +111,13 @@ class UserController {
             try{
                 let userId = req.params.id,
                     newPass = req.body.newPass;
-    
+
                 User
                     .findByIdAndUpdate({_id : userId}, {password : newPass})
                     .then(() => {
                         return apiResponse.successResponse(res, 'Change password successfully');
                     });
-    
+
             } catch(err){
                 return apiResponse.ErrorResponse(res, err);
             }

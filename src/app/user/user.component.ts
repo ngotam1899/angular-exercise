@@ -3,6 +3,13 @@ import { UserService } from '../shared/services/user.service';
 import { User } from '../shared/interface/user.interface';
 import { UserFormComponent } from '../user-form/user-form.component'
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+
+interface IParams {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+}
 
 @Component({
   selector: 'app-user',
@@ -12,20 +19,35 @@ import { MatDialog } from '@angular/material/dialog';
 export class UserComponent implements OnInit {
   public displayedColumns: string[] = ['index', 'name', 'username', 'email', 'isActive', 'isAdmin', 'action'];
   public dataSource : User[];
-  public user: User;
+  public user: User;                  // User detail
+  public keyword: string = '';        // Keyword to search
+  public queryParams: IParams;        // Query parameters
+  public total: number;               // Total data
+  public status: string;              // Status order
+  public limit: number = 8;           // (Pagination) Limit data in one page
+  public page: number = 0;            // (Pagination) Current page
 
   constructor(
     private userService: UserService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public activatedRoute: ActivatedRoute,
+    public router: Router,
   ) { }
 
   ngOnInit() {
-    this.loadData()
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.loadData(params);
+      this.queryParams = params;
+      this.keyword = params['keyword'];
+      this.page = params['page'];
+      this.limit = params['limit'];
+    })
   }
 
-  private loadData() {
-    this.userService.getUserList().subscribe((data) => {
+  private loadData(queryParams? : IParams) {
+    this.userService.getUserList(queryParams).subscribe((data) => {
       this.dataSource = data.data.users;
+      this.total = data.data.total;
     });
   }
 
@@ -39,6 +61,29 @@ export class UserComponent implements OnInit {
   onAdd(){
     this.openDialog()
   }
+
+  onSearch(event){
+    this.handleUpdateFilter({
+      keyword: event.target.value,
+      page: 0
+    })
+  }
+
+  onPageChange(event) {
+    this.handleUpdateFilter({
+      limit: event.pageSize || 0,
+      page: event.pageIndex
+    })
+  }
+
+  handleUpdateFilter = (data: any) => {
+    const pathname = location.pathname;
+    this.queryParams = {
+      ...this.queryParams,
+      ...data,
+    };
+    this.router.navigate([`${pathname}`], { queryParams : this.queryParams })
+  };
 
   openDialog(user?: User): void {
     const dialogRef = this.dialog.open(UserFormComponent, {
@@ -56,7 +101,7 @@ export class UserComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadData()
+      this.loadData(this.queryParams)
     });
   }
 }
