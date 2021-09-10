@@ -36,6 +36,7 @@ export class AuthService {
 
   public removeToken() {
     localStorage.removeItem('token');
+    window.location.reload()
   }
 
   public getToken() {

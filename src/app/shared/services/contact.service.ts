@@ -15,6 +15,7 @@ interface IParams {
   limit?: number;
   keyword?: string;
   leadSrc?: string;
+  assignedTo?: string;
 }
 
 @Injectable({
@@ -35,6 +36,7 @@ export class ContactService {
       }
       if (queryParams.keyword) params = params.set('keyword', queryParams.keyword);
       if (queryParams.leadSrc) params = params.set('leadSrc', queryParams.leadSrc);
+      if (queryParams.assignedTo) params = params.set('assignedTo', queryParams.assignedTo);
     }
     const url = `${this.REST_API_SERVER}`;
     return this.httpClient
@@ -46,6 +48,20 @@ export class ContactService {
     const url = `${this.REST_API_SERVER}/` + contactId;
     return this.httpClient
       .get<any>(url)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getContactLatest(queryParams: any) {
+    let params = new HttpParams();
+    if(queryParams){
+      if (queryParams.pageContact && queryParams.limitContact) {
+        params = params.set('page', queryParams.pageContact.toString())
+        .set('limit', queryParams.limitContact.toString());
+      }
+    }
+    const url = `${this.REST_API_SERVER}/latest`;
+    return this.httpClient
+      .get<any>(url, { params })
       .pipe(catchError(this.handleError));
   }
 

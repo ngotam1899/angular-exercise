@@ -53,5 +53,5 @@ app.use((err, req, res, next) => {
 if(!module.parent){
     app.listen(process.env.SERVER_PORT, process.env.HOSTNAME, () => {
         console.info(`Server running at http://${process.env.HOSTNAME}:${process.env.SERVER_PORT}`)
-    });   
+    });
 }

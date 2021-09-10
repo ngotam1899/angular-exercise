@@ -5,7 +5,7 @@
     </button>
     <h1>Customer Relationship Management</h1>
     <div class="ml-auto">
-      <button *ngIf="userName===undefined; else loggedIn" mat-raised-button (click)="onHandleSignin()">Sign in</button>
+      <button *ngIf="!userName; else loggedIn" mat-raised-button (click)="onHandleSignin()">Sign in</button>
       <ng-template #loggedIn>
         <button mat-button [matMenuTriggerFor]="user">{{userName}}</button>
         <mat-menu #user="matMenu">

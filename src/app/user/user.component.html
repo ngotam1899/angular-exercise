@@ -1,7 +1,9 @@
 <div class="container">
   <h1>User management</h1>
-  <button mat-raised-button color="accent" (click)="onAdd()">Add an user</button>
-
+  <mat-form-field class="ml-auto w-50">
+    <input matInput placeholder="Input subject to search" [(ngModel)]="keyword" (keyup.Enter)="onSearch($event)">
+  </mat-form-field>
+  <button mat-raised-button color="accent" class="float-right" (click)="onAdd()">Add an user</button>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
@@ -58,11 +60,12 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
   <mat-paginator
-      [length]="total"
-      [pageSize]="limit"
-      [pageIndex]="page"
-      [pageSizeOptions]="[8, 12]"
-      (page)="onPageChange($event)"
-      >
-    </mat-paginator>
+    *ngIf="total >= 8"
+    [length]="total"
+    [pageSize]="limit"
+    [pageIndex]="page"
+    [pageSizeOptions]="[8, 12]"
+    (page)="onPageChange($event)"
+    >
+  </mat-paginator>
 </div>

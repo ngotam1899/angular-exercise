@@ -30,7 +30,7 @@ class SalesOrderController {
           let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
           condition.subject = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
         }
-        if (req.query.status != undefined && req.query.status != '') {
+        if (req.query.status != undefined && req.query.status != '' && req.query.status != '-1') {
           condition.status = req.query.status;
         }
         /* Pagination */
@@ -92,8 +92,7 @@ class SalesOrderController {
             });
         }
       }catch(err){
-        console.log(err);
-        //return apiResponse.ErrorResponse(res, err);
+        return apiResponse.ErrorResponse(res, err);
       }
     }
 
@@ -162,7 +161,7 @@ class SalesOrderController {
         }, 1000);
     }
 
-    // [GET] /search/:salesOrder - function to find sales orders by subject
+    // [GET] /latest - function to find sales orders by subject
     findSalesOrder(req, res){
         let contactName = req.params.contactName;
         try {
@@ -174,6 +173,49 @@ class SalesOrderController {
         }catch(err){
             return apiResponse.ErrorResponse(res, err);
         }
+    }
+
+    getLatestSalesOrder = async (req, res) => {
+      try {
+        const today = new Date();
+        const condition = {
+          createdTime: { $lte: today - 7 }
+        };
+        let limit = 8;
+        let page = 0;
+        let total = 0;
+
+        /* Pagination */
+        if (req.query.limit != undefined && req.query.limit != '') {
+          const number_limit = parseInt(req.query.limit);
+          if (number_limit && number_limit > 0) {
+            limit = number_limit;
+          }
+        }
+        if (req.query.page != undefined && req.query.page != '') {
+          const number_page = parseInt(req.query.page);
+          if (number_page && number_page > 0) {
+            page = number_page;
+          }
+        }
+        /* Pagination */
+        const isAdmin = req.isAdmin;
+        if(isAdmin){
+          let salesOrder = await SalesOrder
+            .find(condition)
+            .limit(limit)
+            .skip(limit * page);
+          total = await SalesOrder.countDocuments(condition);
+          return apiResponse.successResponseWithData(res, 'Success', {
+            salesOrder: mutipleMongooseToObject(salesOrder),
+            total,
+            page,
+            limit
+          });
+        }
+      }catch (err) {
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 }
 

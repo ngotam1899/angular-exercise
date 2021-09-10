@@ -71,8 +71,8 @@ export class UserComponent implements OnInit {
 
   onPageChange(event) {
     this.handleUpdateFilter({
-      limit: event.pageSize || 0,
-      page: event.pageIndex
+      limit: event.pageSize,
+      page: event.pageIndex || 0
     })
   }
 

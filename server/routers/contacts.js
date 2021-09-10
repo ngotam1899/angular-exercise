@@ -6,6 +6,7 @@ const jwtHelper = require('../config/jwtHelper');
 
 router.post('/', contactsController.storeContact); // store a contact
 router.get('/', jwtHelper.verifyJwtToken, authController.verifyUser, contactsController.getListOfContacts); // get list of contacts
+router.get('/latest', jwtHelper.verifyJwtToken, authController.verifyUser, contactsController.getLatestContacts); // new contact in the last 7 days
 router.get('/:id', contactsController.getContact); // get a contact by contact ID
 router.put('/:id', contactsController.updateContact); // update a contact by contact ID
 router.delete('/:id', contactsController.deleteContact); // delete a contact by contact ID

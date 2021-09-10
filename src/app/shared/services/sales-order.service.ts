@@ -41,6 +41,20 @@ export class SalesOrderService {
       .pipe(catchError(this.handleError));
   }
 
+  public getSalesOrderLatest(queryParams? : any) {
+    let params = new HttpParams();
+    if(queryParams){
+      if (queryParams.pageSalesOrder && queryParams.limitSalesOrder) {
+        params = params.set('page', queryParams.pageSalesOrder.toString())
+        .set('limit', queryParams.limitSalesOrder.toString());
+      }
+    }
+    const url = `${this.REST_API_SERVER}/latest`;
+    return this.httpClient
+      .get<any>(url, { params })
+      .pipe(catchError(this.handleError));
+  }
+
   public getSalesOrderDetail(salesOrderId: string) {
     const url = `${this.REST_API_SERVER}/` + salesOrderId;
     return this.httpClient

@@ -26,12 +26,16 @@ class ContactsController {
         let limit = 8;
         let page = 0;
         let total = 0;
+        console.log(req.params)
         if (req.query.keyword != undefined && req.query.keyword != '') {
           let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
           condition.contactName = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
         }
-        if (req.query.leadSrc != undefined && req.query.leadSrc != '') {
+        if (req.query.leadSrc != undefined && req.query.leadSrc != '' && req.query.leadSrc != '-1') {
           condition.leadSrc = req.query.leadSrc;
+        }
+        if (req.query.assignedTo != undefined && req.query.assignedTo != '') {
+          condition.assignedTo = req.query.assignedTo;
         }
         /* Pagination */
         if (req.query.limit != undefined && req.query.limit != '') {
@@ -166,6 +170,48 @@ class ContactsController {
         }catch(err){
             return apiResponse.ErrorResponse(res, err);
         }
+    }
+
+    getLatestContacts = async (req, res) => {
+      try {
+        const today = new Date();
+        const condition = {
+          createdTime: { $lte: today - 7 }
+        };
+        let limit = 8;
+        let page = 0;
+        let total = 0;
+        /* Pagination */
+        if (req.query.limit != undefined && req.query.limit != '') {
+          const number_limit = parseInt(req.query.limit);
+          if (number_limit && number_limit > 0) {
+            limit = number_limit;
+          }
+        }
+        if (req.query.page != undefined && req.query.page != '') {
+          const number_page = parseInt(req.query.page);
+          if (number_page && number_page > 0) {
+            page = number_page;
+          }
+        }
+        /* Pagination */
+        const isAdmin = req.isAdmin;
+        if(isAdmin){
+          let contacts = await Contacts
+            .find(condition)
+            .limit(limit)
+			      .skip(limit * page);
+            total = await Contacts.countDocuments(condition);
+          return apiResponse.successResponseWithData(res, 'Success', {
+            contacts,
+            total,
+            page,
+            limit
+          });
+        }
+      }catch (err) {
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 }
 

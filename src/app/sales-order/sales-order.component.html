@@ -53,6 +53,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <mat-paginator
+      *ngIf="total >= 8"
       [length]="total"
       [pageSize]="limit"
       [pageIndex]="page"
