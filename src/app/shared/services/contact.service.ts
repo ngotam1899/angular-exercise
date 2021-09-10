@@ -8,26 +8,19 @@ import {
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Contact } from '../interface/contact.interface';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  leadSrc?: string;
-  assignedTo?: string;
-}
+import { Contact, IParamsContact } from '../interface/contact.interface';
+import { urlConstant } from '../constants/url.constant'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
 
-  private REST_API_SERVER = 'http://localhost:4040/contacts';
+  private REST_API_SERVER = urlConstant.API.CONTACT;
 
   constructor(private httpClient: HttpClient) {}
 
-  public getContactList(queryParams?: IParams) {
+  public getContactList(queryParams?: IParamsContact) {
     let params = new HttpParams();
     if(queryParams){
       if (queryParams.page && queryParams.limit) {

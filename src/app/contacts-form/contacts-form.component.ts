@@ -1,15 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Contact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
+import { CommonService } from '../shared/services/common.service';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { User } from '../shared/interface/user.interface';
 import { UserService } from '../shared/services/user.service';
-import { FormControl } from '@angular/forms';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { leadSrcs } from '../shared/constants'
 
 export interface State {
   flag: string;
@@ -23,25 +25,40 @@ export interface State {
   styleUrls: ['./contacts-form.component.scss']
 })
 export class ContactsFormComponent implements OnInit {
-  // (0) Existing Customer, (1) Partner, (2) Conference, (3) Website, (4) Word of mouth, (5) Other
-  public leadSrcs = [
-    { value: "0", viewValue: "Existing Customer" },
-    { value: "1", viewValue: "Partner" },
-    { value: "2", viewValue: "Conference" },
-    { value: "3", viewValue: "Website" },
-    { value: "4", viewValue: "Word of mouth" },
-    { value: "5", viewValue: "Other" },
-  ]
-  public userList: User[]
+  public formContact: FormGroup;
+  public leadSrcs = leadSrcs;
+  public userList: User[];
+  public creator: User;                   // Creator is the current user
 
   constructor(
+    private formBuilder : FormBuilder,
     public contactService: ContactService,
     public userService: UserService,
+    public commonService : CommonService,
     public dialogRef: MatDialogRef<ContactsFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Contact
   ) {}
 
-  stateCtrl = new FormControl();
+  createForm(){
+    this.formContact = this.formBuilder.group({
+      contactName: [this.data.contactName, [ Validators.required ]],
+      salutation: [this.data.salutation, [ Validators.required ]],
+      mobilePhone: [this.data.mobilePhone, [ Validators.required ]],
+      email: [this.data.email],
+      organization: [this.data.organization],
+      dob: [this.data.dob],
+      leadSrc: [this.data.leadSrc, [ Validators.required ]],
+      assignedTo: [this.data.assignedTo, [ Validators.required ]],
+      creator: [{
+        value: this.data.creator || this.creator,
+        disabled: true
+      }],
+      address: [this.data.address],
+      description: [this.data.description],
+    })
+  }
+
+  assignedTo = new FormControl();
   filteredStates: Observable<User[]>;
 
   private _filterStates(value: string): User[] {
@@ -50,9 +67,13 @@ export class ContactsFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.commonService.user$.subscribe((user) => {
+      this.creator = user.username;
+    });
+    this.createForm();
     this.userService.getUserList().subscribe((data) => {
       this.userList = data.data.users;
-      this.filteredStates = this.stateCtrl.valueChanges
+      this.filteredStates = this.assignedTo.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this._filterStates(state) : this.userList.slice())
@@ -60,13 +81,13 @@ export class ContactsFormComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  onSubmit(data): void {
     if(this.data._id){
       this.contactService
-      .updateContact(this.data._id, this.data)
+      .updateContact(this.data._id, data)
       .subscribe(
         (data) => {
-          this.dialogRef.close({ data: this.data });
+          this.dialogRef.close({ data });
         },
         (error) => {
           console.log('Update contact: failed', error);
@@ -75,10 +96,10 @@ export class ContactsFormComponent implements OnInit {
     }
     else{
       this.contactService
-      .addContact(this.data)
+      .addContact(data)
       .subscribe(
         (data) => {
-          this.dialogRef.close({ data: this.data });
+          this.dialogRef.close({ data });
         },
         (error) => {
           console.log('Add contact: failed', error);

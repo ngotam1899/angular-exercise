@@ -1,16 +1,15 @@
+<form [formGroup]="formSalesOrder" (ngSubmit)="onSubmit(formSalesOrder.value)">
 <div mat-dialog-content>
   <h3>{{data._id ? 'Edit sale order' : 'Add new sale order'}}</h3>
   <mat-form-field>
     <mat-label>Subject</mat-label>
-    <input matInput [(ngModel)]="data.subject" />
+    <input matInput formControlName="subject" />
   </mat-form-field>
   <mat-form-field>
     <mat-label>Contact name</mat-label>
     <input matInput
-          [(ngModel)]="data.contactName"
-          aria-label="State"
-          [matAutocomplete]="auto"
-          [formControl]="stateCtrl">
+      formControlName="contactName"
+      [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option *ngFor="let state of filteredStates | async" [value]="state.contactName">
         {{state.contactName}}
@@ -19,7 +18,7 @@
   </mat-form-field>
     <mat-form-field>
     <mat-label>Status</mat-label>
-    <mat-select [(ngModel)]="data.status">
+    <mat-select formControlName="status">
       <mat-option *ngFor="let status of statuses" [value]="status.value">
         {{status.viewValue}}
       </mat-option>
@@ -27,22 +26,22 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Total</mat-label>
-    <input matInput [(ngModel)]="data.total" />
+    <input matInput formControlName="total" />
   </mat-form-field>
   <mat-form-field>
     <mat-label>Assigned to</mat-label>
-    <input matInput [(ngModel)]="data.assignedTo" disabled/>
+    <input matInput formControlName="assignedTo"/>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Creator</mat-label>
-    <input matInput [(ngModel)]="data.creator || creator" disabled />
+    <input matInput formControlName="creator"/>
   </mat-form-field>
    <mat-form-field>
     <mat-label>Description</mat-label>
-    <input matInput [(ngModel)]="data.description" />
+    <input matInput formControlName="description"/>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()" mat-raised-button>Submit</button>
-  <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
+  <button type="submit" mat-button mat-raised-button>Submit</button>
+  <button type="button" mat-button class="ml-auto" (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
 </div>

@@ -9,9 +9,10 @@ import { User } from '../shared/interface/user.interface';
 import { CommonService } from '../shared/services/common.service';
 import { Contact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
-import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
+import { statuses } from '../shared/constants'
 
 @Component({
   selector: 'app-sales-order-form',
@@ -19,19 +20,15 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./sales-order-form.component.scss']
 })
 export class SalesOrderFormComponent implements OnInit {
-  // (0) Created, (1) Approved, (2) Delivered, (3) Cancelled
-  public statuses = [
-    { value: "0", viewValue: "Created" },
-    { value: "1", viewValue: "Approved" },
-    { value: "2", viewValue: "Delivered" },
-    { value: "3", viewValue: "Cancelled" }
-  ]
-  public creator: User;
-  public contactList: Contact[]
-  stateCtrl = new FormControl();
-  filteredStates: Observable<Contact[]>;
+  public formSalesOrder: FormGroup;
+  public statuses = statuses;             // Get list status value
+  public creator: User;                   // Creator is the current user
+  public contactList: Contact[]           // Get contact list
+  contactName = new FormControl();        // Display contact list
+  filteredStates: Observable<Contact[]>;  // 
 
   constructor(
+    private formBuilder : FormBuilder,
     public salesOrderService: SalesOrderService,
     public contactService: ContactService,
     public commonService : CommonService,
@@ -39,14 +36,32 @@ export class SalesOrderFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: SalesOrder
   ) { }
 
+  createForm(){
+    this.formSalesOrder = this.formBuilder.group({
+      subject: [this.data.subject, [ Validators.required ]],
+      contactName: [this.data.contactName, [ Validators.required ]],
+      status: [this.data.status, [ Validators.required ]],
+      total: [this.data.total, [ Validators.required ]],
+      assignedTo: [{
+        value: this.data.assignedTo,
+        disabled: true
+      }, [ Validators.required ]],
+      creator: [{
+        value: this.data.creator || this.creator,
+        disabled: true
+      }],
+      description: [this.data.description],
+    })
+  }
+
   ngOnInit() {
     this.commonService.user$.subscribe((user) => {
       this.creator = user.username;
-      this.data.creator = user.username;
     });
+    this.createForm();
     this.contactService.getContactList().subscribe((data) => {
       this.contactList = data.data.contacts;
-      this.filteredStates = this.stateCtrl.valueChanges
+      this.filteredStates = this.contactName.valueChanges
       .pipe(
         startWith(''),
         map(state => state ? this._filterStates(state) : this.contactList.slice())
@@ -59,13 +74,13 @@ export class SalesOrderFormComponent implements OnInit {
     return this.contactList.filter(state => state.contactName.toLowerCase().includes(filterValue));
   }
 
-  onSubmit(): void {
+  onSubmit(data): void {
     if(this.data._id){
       this.salesOrderService
-      .updateSalesOrder(this.data._id, this.data)
+      .updateSalesOrder(this.data._id, data)
       .subscribe(
         (data) => {
-          this.dialogRef.close({ data: this.data });
+          this.dialogRef.close({ data: data });
         },
         (error) => {
           console.log('Update contact: failed', error);
@@ -74,10 +89,10 @@ export class SalesOrderFormComponent implements OnInit {
     }
     else{
       this.salesOrderService
-      .addSalesOrder(this.data)
+      .addSalesOrder(data)
       .subscribe(
         (data) => {
-          this.dialogRef.close({ data: this.data });
+          this.dialogRef.close({ data: data });
         },
         (error) => {
           console.log('Add contact: failed', error);

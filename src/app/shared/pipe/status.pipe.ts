@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { statuses } from '../constants';
 
 @Pipe({
   name: 'status'
@@ -6,13 +7,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class StatusPipe implements PipeTransform {
   transform(value: string, ...args: any[]): any {
     let result: string = '';
-    const statuses = [
-      { value: "-1", viewValue: "All sales" },
-      { value: "0", viewValue: "Created" },
-      { value: "1", viewValue: "Approved" },
-      { value: "2", viewValue: "Delivered" },
-      { value: "3", viewValue: "Cancelled" }
-    ]
     result = statuses[+value + 1].viewValue;
     return result;
   }

@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Contact } from '../shared/interface/contact.interface';
+import { Contact, IParamsContact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
 import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
 import { ActivatedRoute, Router } from '@angular/router';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  leadSrc?: string;
-}
 
 @Component({
   selector: 'app-contacts',
@@ -24,7 +17,7 @@ export class ContactsComponent implements OnInit {
   public err: string = '';          // Error display
   public keyword: string = '';      // Keyword to search
   public leadSrc: string            // Leader source
-  public queryParams: IParams;      // Query parameters
+  public queryParams: IParamsContact;      // Query parameters
   public total: number;             // Total data
   public limit: number = 8;         // (Pagination) Limit data in one page
   public page: number = 0;          // (Pagination) Current page
@@ -47,7 +40,7 @@ export class ContactsComponent implements OnInit {
     })
   }
 
-  loadData(queryParams? : IParams){
+  loadData(queryParams? : IParamsContact){
     this.contactService.getContactList(queryParams).subscribe((data) => {
       this.dataSource = data.data.contacts;
       this.total = data.data.total;

@@ -39,6 +39,7 @@ import { ContactsFormComponent } from './contacts-form/contacts-form.component';
 import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.component';
 import { LeadSrcPipe } from './shared/pipe/lead-src.pipe';
 import { StatusPipe } from './shared/pipe/status.pipe';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { StatusPipe } from './shared/pipe/status.pipe';
     SalesOrderFormComponent,
     LeadSrcPipe,
     StatusPipe,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +86,13 @@ import { StatusPipe } from './shared/pipe/status.pipe';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true }
   ],
-  entryComponents: [UserFormComponent, LoginFormComponent, ContactsFormComponent, SalesOrderFormComponent],
+  entryComponents: [
+    UserFormComponent, 
+    LoginFormComponent, 
+    ContactsFormComponent, 
+    SalesOrderFormComponent,
+    ChangePasswordComponent
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

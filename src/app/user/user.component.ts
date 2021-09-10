@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
-import { User } from '../shared/interface/user.interface';
+import { User, IParamsUser } from '../shared/interface/user.interface';
 import { UserFormComponent } from '../user-form/user-form.component'
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-}
 
 @Component({
   selector: 'app-user',
@@ -21,7 +15,7 @@ export class UserComponent implements OnInit {
   public dataSource : User[];
   public user: User;                  // User detail
   public keyword: string = '';        // Keyword to search
-  public queryParams: IParams;        // Query parameters
+  public queryParams: IParamsUser;    // Query parameters
   public total: number;               // Total data
   public status: string;              // Status order
   public limit: number = 8;           // (Pagination) Limit data in one page
@@ -44,7 +38,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  private loadData(queryParams? : IParams) {
+  private loadData(queryParams? : IParamsUser) {
     this.userService.getUserList(queryParams).subscribe((data) => {
       this.dataSource = data.data.users;
       this.total = data.data.total;

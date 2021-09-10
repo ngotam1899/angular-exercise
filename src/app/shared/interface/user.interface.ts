@@ -8,3 +8,9 @@ export interface User {
   isAdmin?: boolean;
   isActive?: boolean;
 }
+
+export interface IParamsUser {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+}

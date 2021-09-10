@@ -1,64 +1,64 @@
-<div mat-dialog-content>
-  <h3>{{data._id ? 'Edit contact' : 'Add new contact'}}</h3>
-  <mat-form-field>
-    <mat-label>Contact name</mat-label>
-    <input matInput [(ngModel)]="data.contactName" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Salutation</mat-label>
-    <input matInput [(ngModel)]="data.salutation" />
-  </mat-form-field>
+<form [formGroup]="formContact" (ngSubmit)="onSubmit(formContact.value)">
+  <div mat-dialog-content>
+    <h3>{{data._id ? 'Edit contact' : 'Add new contact'}}</h3>
     <mat-form-field>
-    <mat-label>Mobile phone</mat-label>
-    <input matInput [(ngModel)]="data.mobilePhone"/>
-  </mat-form-field>
- <mat-form-field>
-    <mat-label>Email</mat-label>
-    <input matInput [(ngModel)]="data.email" />
-  </mat-form-field>
+      <mat-label>Contact name</mat-label>
+      <input matInput formControlName="contactName" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Salutation</mat-label>
+      <input matInput formControlName="salutation"  />
+    </mat-form-field>
+      <mat-form-field>
+      <mat-label>Mobile phone</mat-label>
+      <input matInput formControlName="mobilePhone" />
+    </mat-form-field>
   <mat-form-field>
-    <mat-label>Organization</mat-label>
-    <input matInput [(ngModel)]="data.organization" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>DOB</mat-label>
-    <input matInput [(ngModel)]="data.dob" />
-  </mat-form-field>
-   <mat-form-field>
-    <mat-label>Lead source</mat-label>
-    <mat-select [(ngModel)]="data.leadSrc">
-      <mat-option *ngFor="let leadSrc of leadSrcs" [value]="leadSrc.value">
-        {{leadSrc.viewValue}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Assigned to</mat-label>
-    <input matInput
-          [(ngModel)]="data.assignedTo"
-          aria-label="State"
-          [matAutocomplete]="auto"
-          [formControl]="stateCtrl">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let state of filteredStates | async" [value]="state.username">
-        {{state.username}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Creator</mat-label>
-    <input matInput [(ngModel)]="data.creator" />
-  </mat-form-field>
-   <mat-form-field>
-    <mat-label>Address</mat-label>
-    <input matInput [(ngModel)]="data.address" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Description</mat-label>
-    <input matInput [(ngModel)]="data.description" />
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()" mat-raised-button>Submit</button>
-  <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
-</div>
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Organization</mat-label>
+      <input matInput formControlName="organization" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>DOB</mat-label>
+      <input matInput formControlName="dob" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Lead source</mat-label>
+      <mat-select formControlName="leadSrc" >
+        <mat-option *ngFor="let leadSrc of leadSrcs" [value]="leadSrc.value">
+          {{leadSrc.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Assigned to</mat-label>
+      <input matInput
+        formControlName="assignedTo" 
+        [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let state of filteredStates | async" [value]="state.username">
+          {{state.username}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Creator</mat-label>
+      <input matInput formControlName="creator"  />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="address"  />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description"  />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button type="submit" mat-raised-button>Submit</button>
+    <button mat-button type="button" class="ml-auto" (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
+  </div>
+</form>

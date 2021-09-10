@@ -8,24 +8,18 @@ import {
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { SalesOrder } from '../interface/sales-order.interface';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  status?: string;
-}
+import { SalesOrder, IParamsSalesOrder } from '../interface/sales-order.interface';
+import { urlConstant } from '../constants/url.constant'
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesOrderService {
-  private REST_API_SERVER = 'http://localhost:4040/sales_order';
+  private REST_API_SERVER = urlConstant.API.SALES_ORDER;
 
   constructor(private httpClient: HttpClient) {}
 
-  public getSalesOrderList(queryParams?: IParams) {
+  public getSalesOrderList(queryParams?: IParamsSalesOrder) {
     let params = new HttpParams();
     if(queryParams){
       if (queryParams.page && queryParams.limit) {

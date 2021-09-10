@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { LoginFormComponent } from './login-form/login-form.component'
+import { ChangePasswordComponent } from './change-password/change-password.component'
 import { MatDialog } from '@angular/material/dialog'
 import { AuthService } from './shared/services/auth.service'
 import { CommonService } from './shared/services/common.service'
@@ -42,10 +43,14 @@ export class AppComponent implements OnInit {
   }
 
   public onHandleSignin(){
-    this.openDialog()
+    this.openDialogSignin()
   }
 
-  openDialog(): void {
+  public onChangePassword(){
+    this.openDialogChangePassword()
+  }
+
+  openDialogSignin(): void {
     const dialogRef = this.dialog.open(LoginFormComponent, {
       width: '300px',
       data: {
@@ -61,6 +66,22 @@ export class AppComponent implements OnInit {
       if (!!username && !!password && !!token) {
         this.authService.setToken(token);
       }
+    });
+  }
+
+  openDialogChangePassword(): void {
+    const dialogRef = this.dialog.open(ChangePasswordComponent, {
+      width: '300px',
+      data: {
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: ""
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Return home page
+      // Remove token
     });
   }
 }

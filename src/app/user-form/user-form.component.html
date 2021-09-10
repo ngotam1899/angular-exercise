@@ -1,29 +1,31 @@
-<div mat-dialog-content>
-  <h3>{{data._id ? 'Edit user' : 'Add new user'}}</h3>
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput [(ngModel)]="data.name" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Username</mat-label>
-    <input matInput [(ngModel)]="data.username" />
-  </mat-form-field>
+<form [formGroup]="formUser" (ngSubmit)="onSubmit(formUser.value)">
+  <div mat-dialog-content>
+    <h3>{{data._id ? 'Edit user' : 'Add new user'}}</h3>
     <mat-form-field>
-    <mat-label>Password</mat-label>
-    <input matInput [(ngModel)]="data.password" [disabled]="data._id"/>
-  </mat-form-field>
- <mat-form-field>
-    <mat-label>Email</mat-label>
-    <input matInput [(ngModel)]="data.email" />
-  </mat-form-field>
+      <mat-label>Name</mat-label>
+      <input formControlName="name" matInput />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input formControlName="username" matInput />
+    </mat-form-field>
+      <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input type="password" formControlName="password" matInput/>
+    </mat-form-field>
   <mat-form-field>
-    <mat-label>Phone</mat-label>
-    <input matInput [(ngModel)]="data.phone" />
-  </mat-form-field>
-  <mat-checkbox [(ngModel)]="data.isAdmin" >Is admin</mat-checkbox>
-  <mat-checkbox [(ngModel)]="data.isActive" >Is active</mat-checkbox>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()" mat-raised-button>Submit</button>
-  <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
-</div>
+      <mat-label>Email</mat-label>
+      <input type="email" formControlName="email" matInput />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input formControlName="phone" matInput  />
+    </mat-form-field>
+    <mat-checkbox formControlName="isAdmin" >Is admin</mat-checkbox>
+    <mat-checkbox formControlName="isActive" >Is active</mat-checkbox>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button type="submit" mat-raised-button>Submit</button>
+    <button class="ml-auto"mat-button (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
+  </div>
+</form>

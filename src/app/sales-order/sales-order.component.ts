@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SalesOrder } from '../shared/interface/sales-order.interface';
+import { SalesOrder, IParamsSalesOrder } from '../shared/interface/sales-order.interface';
 import { SalesOrderService } from '../shared/services/sales-order.service';
 import { SalesOrderFormComponent } from '../sales-order-form/sales-order-form.component'
 import { ActivatedRoute, Router } from '@angular/router';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  status?: string;
-}
 
 @Component({
   selector: 'app-sales-order',
@@ -20,14 +13,14 @@ interface IParams {
 export class SalesOrderComponent implements OnInit {
   public displayedColumns: string[] = ['index', 'subject', 'contactName', 'status', 'total', 'actions'];
   public dataSource : SalesOrder[];
-  public err: string = '';            // Error display
-  public saleOrder: SalesOrder;       // Sale Order detail
-  public keyword: string = '';        // Keyword to search
-  public queryParams: IParams;        // Query parameters
-  public total: number;               // Total data
-  public status: string;              // Status order
-  public limit: number = 8;           // (Pagination) Limit data in one page
-  public page: number = 0;            // (Pagination) Current page
+  public err: string = '';               // Error display
+  public saleOrder: SalesOrder;          // Sale Order detail
+  public keyword: string = '';           // Keyword to search
+  public queryParams: IParamsSalesOrder; // Query parameters
+  public total: number;                  // Total data
+  public status: string;                 // Status order
+  public limit: number = 8;              // (Pagination) Limit data in one page
+  public page: number = 0;               // (Pagination) Current page
 
   constructor(
     private salesOrderService: SalesOrderService,
@@ -47,7 +40,7 @@ export class SalesOrderComponent implements OnInit {
     })
   }
 
-  loadData(queryParams? : IParams) {
+  loadData(queryParams? : IParamsSalesOrder) {
     this.salesOrderService.getSalesOrderList(queryParams).subscribe((data) => {
       this.dataSource = data.data.salesOrder;
       this.total = data.data.total;

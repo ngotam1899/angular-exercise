@@ -8,3 +8,10 @@ export interface SalesOrder {
   creator?: string;
   description?: string;
 }
+
+export interface IParamsSalesOrder {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  status?: string;
+}

@@ -12,3 +12,11 @@ export interface Contact {
   address?: string;
   description?: string;
 }
+
+export interface IParamsContact {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  leadSrc?: string;
+  assignedTo?: string;
+}

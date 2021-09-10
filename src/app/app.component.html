@@ -9,6 +9,7 @@
       <ng-template #loggedIn>
         <button mat-button [matMenuTriggerFor]="user">{{userName}}</button>
         <mat-menu #user="matMenu">
+          <button mat-menu-item (click)="onChangePassword()">Change Password</button>
           <button mat-menu-item (click)="this.authService.logout()">Logout</button>
         </mat-menu>
       </ng-template>

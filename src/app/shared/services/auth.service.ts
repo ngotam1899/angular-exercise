@@ -8,13 +8,12 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CommonService } from './common.service'
 import { Router } from '@angular/router';
+import { urlConstant } from '../constants/url.constant'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private REST_API_SERVER = 'http://localhost:4040';
-
   constructor(
     private httpClient: HttpClient,
     private router: Router,
@@ -57,7 +56,7 @@ export class AuthService {
     const payload = { username, password };
     return (
       this.httpClient
-        .post<any>(`${this.REST_API_SERVER}/signin`, payload, this.httpOptions)
+        .post<any>(urlConstant.API.AUTH.SIGNIN, payload, this.httpOptions)
         .pipe(catchError(this.handleError))
     );
   }
@@ -65,7 +64,7 @@ export class AuthService {
   public getProfile(): Observable<any> {
     return (
       this.httpClient
-        .get<any>(`${this.REST_API_SERVER}/userProfile`, this.httpOptions)
+        .get<any>(urlConstant.API.AUTH.GET_PROFILE, this.httpOptions)
         .pipe(catchError(this.handleError))
     );
   }

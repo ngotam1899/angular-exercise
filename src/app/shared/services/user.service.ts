@@ -8,24 +8,18 @@ import {
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { User } from '../interface/user.interface';
-
-interface IParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  status?: string;
-}
+import { User, IParamsUser } from '../interface/user.interface';
+import { urlConstant } from '../constants/url.constant'
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private REST_API_SERVER = 'http://localhost:4040/user_management';
+  private REST_API_SERVER = urlConstant.API.USER;
 
   constructor(private httpClient: HttpClient) {}
 
-  public getUserList(queryParams?: IParams) {
+  public getUserList(queryParams?: IParamsUser) {
     let params = new HttpParams();
     if(queryParams){
       if (queryParams.page && queryParams.limit) {
