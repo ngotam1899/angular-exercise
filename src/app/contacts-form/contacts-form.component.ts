@@ -12,6 +12,7 @@ import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { leadSrcs } from '../shared/constants'
+import { NotificationService } from '../shared/services/notification.service';
 
 export interface State {
   flag: string;
@@ -28,13 +29,15 @@ export class ContactsFormComponent implements OnInit {
   public formContact: FormGroup;
   public leadSrcs = leadSrcs;
   public userList: User[];
-  public creator: User;                   // Creator is the current user
+  public creator: string;                   // Creator is the current user
+  public admin: boolean; 
 
   constructor(
     private formBuilder : FormBuilder,
     public contactService: ContactService,
     public userService: UserService,
     public commonService : CommonService,
+    private notifyService : NotificationService,
     public dialogRef: MatDialogRef<ContactsFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Contact
   ) {}
@@ -69,6 +72,7 @@ export class ContactsFormComponent implements OnInit {
   ngOnInit() {
     this.commonService.user$.subscribe((user) => {
       this.creator = user.username;
+      this.admin = user.isAdmin
     });
     this.createForm();
     this.userService.getUserList().subscribe((data) => {
@@ -88,21 +92,24 @@ export class ContactsFormComponent implements OnInit {
       .subscribe(
         (data) => {
           this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Update contact successfully", "Success")
         },
         (error) => {
-          console.log('Update contact: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }
     else{
+      data.creator = this.creator;
       this.contactService
       .addContact(data)
       .subscribe(
         (data) => {
           this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Add contact successfully", "Success")
         },
         (error) => {
-          console.log('Add contact: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }

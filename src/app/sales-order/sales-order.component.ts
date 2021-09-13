@@ -4,6 +4,8 @@ import { SalesOrder, IParamsSalesOrder } from '../shared/interface/sales-order.i
 import { SalesOrderService } from '../shared/services/sales-order.service';
 import { SalesOrderFormComponent } from '../sales-order-form/sales-order-form.component'
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
+import { CommonService } from '../shared/services/common.service';
 
 @Component({
   selector: 'app-sales-order',
@@ -21,15 +23,20 @@ export class SalesOrderComponent implements OnInit {
   public status: string;                 // Status order
   public limit: number = 8;              // (Pagination) Limit data in one page
   public page: number = 0;               // (Pagination) Current page
+  public admin: boolean = false;
 
   constructor(
     private salesOrderService: SalesOrderService,
     public dialog: MatDialog,
     public activatedRoute: ActivatedRoute,
     public router: Router,
+    public commonService : CommonService,
   ) { }
 
   ngOnInit() {
+    this.commonService.user$.subscribe((user) => {
+      this.admin = user.isAdmin;
+    });
     this.activatedRoute.queryParams.subscribe(params => {
       this.loadData(params);
       this.queryParams = params;
@@ -61,9 +68,7 @@ export class SalesOrderComponent implements OnInit {
   }
 
   onDelete(salesOrderId: string){
-    this.salesOrderService.deleteSalesOrder(salesOrderId).subscribe((data) => {
-      this.loadData()
-    });
+    this.openConfirm("SALES_ORDER", salesOrderId);
   }
 
   onSearch(event){
@@ -104,6 +109,19 @@ export class SalesOrderComponent implements OnInit {
       }
     });
 
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadData(this.queryParams)
+    });
+  }
+
+  openConfirm(type: string, id: string): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      width: '300px',
+      data: {
+        id,
+        type
+      }
+    });
     dialogRef.afterClosed().subscribe(result => {
       this.loadData(this.queryParams)
     });

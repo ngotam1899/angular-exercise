@@ -49,12 +49,13 @@ class SalesOrderController {
         /* Pagination */
         const isAdmin = req.isAdmin;
         if(!isAdmin){
-          condition.assignedTo = req.name;
+          condition.assignedTo = req.username;
           let salesOrder = await SalesOrder
             .find(condition)
             .limit(limit)
             .skip(limit * page);
           total = await SalesOrder.countDocuments(condition);
+          console.log(salesOrder)
           if(salesOrder.length > 0)
             return apiResponse.successResponseWithData(res, 'Success', {
               salesOrder: mutipleMongooseToObject(salesOrder),
@@ -62,13 +63,12 @@ class SalesOrderController {
               page,
               limit
             });
-          else
-            return apiResponses.successResponseWithData(res, 'Success', {
-              salesOrder:[],
-              total: 0,
-              page,
-              limit
-            });
+          else return apiResponse.successResponseWithData(res, 'Success', {
+            salesOrder:[],
+            total: 0,
+            page,
+            limit
+          });
         }
         else{
           let salesOrder = await SalesOrder
@@ -83,8 +83,7 @@ class SalesOrderController {
               page,
               limit
             });
-          else
-            return apiResponses.successResponseWithData(res, 'Success', {
+          else return apiResponse.successResponseWithData(res, 'Success', {
               salesOrder:[],
               total: 0,
               page,
@@ -92,6 +91,7 @@ class SalesOrderController {
             });
         }
       }catch(err){
+        console.log(err);
         return apiResponse.ErrorResponse(res, err);
       }
     }

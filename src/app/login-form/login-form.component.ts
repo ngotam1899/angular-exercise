@@ -4,8 +4,8 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { AuthService } from '../shared/services/auth.service';
-import { CommonService } from '../shared/services/common.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { NotificationService } from '../shared/services/notification.service';
 
 export interface Authorization {
   username: string;
@@ -25,7 +25,7 @@ export class LoginFormComponent implements OnInit {
     private formBuilder : FormBuilder,
     public authService: AuthService,
     public dialogRef: MatDialogRef<LoginFormComponent>,
-    public commonService: CommonService,
+    private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: Authorization
   ) { }
 
@@ -51,9 +51,10 @@ export class LoginFormComponent implements OnInit {
             _data.token = data;
             this.dialogRef.close({ data: _data });
           }
+          this.notifyService.showSuccess("Login successfully", "Success")
         },
         (error) => {
-          console.log('AuthService: failed', error);
+          this.notifyService.showError( error, "Error")
         }
       );
   }

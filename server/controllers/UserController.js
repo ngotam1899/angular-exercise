@@ -106,22 +106,22 @@ class UserController {
     }
 
     // [POST] /user_management/:id - function to change user's password
-    changePassword(req, res){
-        setTimeout(() => {
-            try{
-                let userId = req.params.id,
-                    newPass = req.body.newPass;
-
-                User
-                    .findByIdAndUpdate({_id : userId}, {password : newPass})
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Change password successfully');
-                    });
-
-            } catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    changePassword = async (req, res) => {
+      try{
+        let userId = req.params.id;
+        const {curPass, newPass} = req.body;
+        console.log(newPass)
+        if(curPass === newPass) return apiResponse.ErrorResponse(res, 'Your new password is your current password');
+        let user = await User.findById(userId);
+        if(user.verifyPassword(curPass)){
+          user.password = newPass;
+          await user.save();
+          return apiResponse.successResponse(res, 'Change password successfully');
+        }
+        return apiResponse.ErrorResponse(res, 'Your password is incorrect');
+      } catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 }
 

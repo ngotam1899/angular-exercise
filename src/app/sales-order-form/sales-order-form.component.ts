@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { statuses } from '../shared/constants'
+import { NotificationService } from '../shared/services/notification.service';
 
 @Component({
   selector: 'app-sales-order-form',
@@ -22,10 +23,11 @@ import { statuses } from '../shared/constants'
 export class SalesOrderFormComponent implements OnInit {
   public formSalesOrder: FormGroup;
   public statuses = statuses;             // Get list status value
-  public creator: User;                   // Creator is the current user
+  public creator: string;                   // Creator is the current user
+  public admin: boolean;
   public contactList: Contact[]           // Get contact list
   contactName = new FormControl();        // Display contact list
-  filteredStates: Observable<Contact[]>;  // 
+  filteredStates: Observable<Contact[]>;  //
 
   constructor(
     private formBuilder : FormBuilder,
@@ -33,6 +35,7 @@ export class SalesOrderFormComponent implements OnInit {
     public contactService: ContactService,
     public commonService : CommonService,
     public dialogRef: MatDialogRef<SalesOrderFormComponent>,
+    private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: SalesOrder
   ) { }
 
@@ -57,6 +60,7 @@ export class SalesOrderFormComponent implements OnInit {
   ngOnInit() {
     this.commonService.user$.subscribe((user) => {
       this.creator = user.username;
+      this.admin = user.isAdmin;
     });
     this.createForm();
     this.contactService.getContactList().subscribe((data) => {
@@ -81,21 +85,24 @@ export class SalesOrderFormComponent implements OnInit {
       .subscribe(
         (data) => {
           this.dialogRef.close({ data: data });
+          this.notifyService.showSuccess("Update sales order successfully", "Success")
         },
         (error) => {
-          console.log('Update contact: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }
     else{
+      data.creator = this.creator;
       this.salesOrderService
       .addSalesOrder(data)
       .subscribe(
         (data) => {
           this.dialogRef.close({ data: data });
+          this.notifyService.showSuccess("Add sales order successfully", "Success")
         },
         (error) => {
-          console.log('Add contact: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }

@@ -26,7 +26,6 @@ class ContactsController {
         let limit = 8;
         let page = 0;
         let total = 0;
-        console.log(req.params)
         if (req.query.keyword != undefined && req.query.keyword != '') {
           let keyword = req.query.keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
           condition.contactName = {$regex: '.*' + keyword.trim() + '.*', $options: 'i'};
@@ -53,7 +52,7 @@ class ContactsController {
         /* Pagination */
         const isAdmin = req.isAdmin;
         if(!isAdmin){
-          condition.assignedTo = req.name;
+          condition.assignedTo = req.username;
           const contacts = await Contacts.find(condition)
           .limit(limit)
 			    .skip(limit * page);

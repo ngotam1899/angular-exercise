@@ -1,6 +1,6 @@
 <form [formGroup]="formContact" (ngSubmit)="onSubmit(formContact.value)">
   <div mat-dialog-content>
-    <h3>{{data._id ? 'Edit contact' : 'Add new contact'}}</h3>
+    <h3>{{data._id ? (admin ? 'Edit contact' : 'Detail contact') : 'Add new contact'}}</h3>
     <mat-form-field>
       <mat-label>Contact name</mat-label>
       <input matInput formControlName="contactName" />
@@ -58,7 +58,7 @@
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-button type="submit" mat-raised-button>Submit</button>
+    <button mat-button type="submit" *ngIf="admin" mat-raised-button>Submit</button>
     <button mat-button type="button" class="ml-auto" (click)="this.dialogRef.close()" mat-raised-button color="primary" cdkFocusInitial>Cancel</button>
   </div>
 </form>

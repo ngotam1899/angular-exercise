@@ -19,11 +19,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 
@@ -40,6 +41,7 @@ import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.com
 import { LeadSrcPipe } from './shared/pipe/lead-src.pipe';
 import { StatusPipe } from './shared/pipe/status.pipe';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     LeadSrcPipe,
     StatusPipe,
     ChangePasswordComponent,
+    ConfirmDeleteComponent,
   ],
   imports: [
     BrowserModule,
@@ -78,20 +81,23 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     MatPaginatorModule,
     MatSelectModule,
     MatAutocompleteModule,
+    MatSnackBarModule,
 
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true }
   ],
   entryComponents: [
-    UserFormComponent, 
-    LoginFormComponent, 
-    ContactsFormComponent, 
+    UserFormComponent,
+    LoginFormComponent,
+    ContactsFormComponent,
     SalesOrderFormComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ConfirmDeleteComponent
   ],
   bootstrap: [AppComponent],
 })

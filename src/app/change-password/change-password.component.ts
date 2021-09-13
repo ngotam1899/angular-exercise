@@ -4,6 +4,10 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
+import { UserService } from '../shared/services/user.service';
+import { CommonService } from '../shared/services/common.service';
+import { NotificationService } from '../shared/services/notification.service';
+import { User } from '../shared/interface/user.interface';
 
 export interface ChangePassword {
   currentPassword: string;
@@ -18,16 +22,21 @@ export interface ChangePassword {
 })
 export class ChangePasswordComponent implements OnInit {
   public formChangePassword: FormGroup;
-
-
+  public user: User;
 
   constructor(
     private formBuilder : FormBuilder,
     public dialogRef: MatDialogRef<ChangePasswordComponent>,
+    public userService: UserService,
+    private commonService: CommonService,
+    private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: ChangePassword
   ) { }
 
   ngOnInit() {
+    this.commonService.user$.subscribe((user) => {
+      this.user = user;
+    });
     this.createForm();
   }
 
@@ -40,29 +49,25 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onSubmit(data): void {
-    /* if(this.data._id){
-      this.salesOrderService
-      .updateSalesOrder(this.data._id, data)
+    const { currentPassword, newPassword, confirmNewPassword } = data;
+    if(newPassword !== confirmNewPassword) {
+      this.notifyService.showWarning("The new password and the confirm password is not the same", "Warning")
+    }
+    else {
+      this.userService.changePassword(this.user._id, {
+        newPass: newPassword,
+        curPass: currentPassword
+      })
       .subscribe(
         (data) => {
-          this.dialogRef.close({ data: data });
+          this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Change password successfully", "Success")
         },
         (error) => {
-          console.log('Update contact: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }
-    else{
-      this.salesOrderService
-      .addSalesOrder(data)
-      .subscribe(
-        (data) => {
-          this.dialogRef.close({ data: data });
-        },
-        (error) => {
-          console.log('Add contact: failed', error);
-        }
-      );
-    } */
+
   }
 }

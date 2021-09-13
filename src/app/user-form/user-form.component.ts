@@ -6,6 +6,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { NotificationService } from '../shared/services/notification.service';
 
 @Component({
   selector: 'app-user-form',
@@ -19,6 +20,7 @@ export class UserFormComponent implements OnInit {
     private formBuilder : FormBuilder,
     public userService: UserService,
     public dialogRef: MatDialogRef<UserFormComponent>,
+    private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: User
   ) { }
 
@@ -31,13 +33,13 @@ export class UserFormComponent implements OnInit {
       name: [this.data.name, [ Validators.required ]],
       username: [this.data.username, [ Validators.required ]],
       password: [{
-        value: this.data.password, disabled: this.data._id}, [ 
+        value: this.data.password, disabled: this.data._id}, [
           Validators.required,
-          Validators.pattern("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$") 
+          Validators.pattern("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$")
         ]
       ],
-      email: [this.data.email, [ 
-        Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$') 
+      email: [this.data.email, [
+        Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')
       ]],
       phone: [this.data.phone, [ Validators.required ]],
       isAdmin: [this.data.isAdmin],
@@ -52,9 +54,10 @@ export class UserFormComponent implements OnInit {
       .subscribe(
         (data) => {
           this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Update user successfully", "Success")
         },
         (error) => {
-          console.log('Add user: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }
@@ -64,9 +67,10 @@ export class UserFormComponent implements OnInit {
       .subscribe(
         (data) => {
           this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Add user successfully", "Success")
         },
         (error) => {
-          console.log('Add user: failed', error);
+          this.notifyService.showError(error, "Error")
         }
       );
     }

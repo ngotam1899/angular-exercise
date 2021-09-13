@@ -80,8 +80,7 @@ export class AppComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Return home page
-      // Remove token
+      if(result) this.authService.logout()
     });
   }
 }

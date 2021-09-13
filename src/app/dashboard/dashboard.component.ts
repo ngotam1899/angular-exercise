@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Contact } from '../shared/interface/contact.interface';
 import { SalesOrder } from '../shared/interface/sales-order.interface';
+import { User } from '../shared/interface/user.interface';
 import { ContactService } from '../shared/services/contact.service';
 import { SalesOrderService } from '../shared/services/sales-order.service';
+import { CommonService } from '../shared/services/common.service';
 import { statuses, leadSrcs } from '../shared/constants'
 
 interface IParams {
@@ -17,6 +19,7 @@ interface IParams {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  public admin: boolean = false;
   public err: string = '';              // Error display
   public leadSrc: string = "-1";        // LeadSrc filter
   public totalContact: number = 0;      // Total contact
@@ -27,26 +30,32 @@ export class DashboardComponent implements OnInit {
   public displayedColumnsContact: string[] = ['index', 'contactName', 'assignedTo', 'createdTime'];
   public dataSourceContact : Contact[];
   public total_Contact: number;               // Total data
-  public limitContact: number = 8;           // (Pagination) Limit data in one page
-  public pageContact: number = 0;            // (Pagination) Current page
+  public limitContact: number = 8;            // (Pagination) Limit data in one page
+  public pageContact: number = 0;             // (Pagination) Current page
   /* SalesOrder table */
   public displayedColumnsSalesOrder: string[] = ['index', 'subject', 'total', 'createdTime'];
   public dataSourceSalesOrder : SalesOrder[];
-  public total_SalesOrder: number;               // Total data
-  public limitSalesOrder: number = 8;           // (Pagination) Limit data in one page
-  public pageSalesOrder: number = 0;            // (Pagination) Current page
-
+  public total_SalesOrder: number;                // Total data
+  public limitSalesOrder: number = 8;             // (Pagination) Limit data in one page
+  public pageSalesOrder: number = 0;              // (Pagination) Current page
+  /* Options of menu select*/
   public leadSource = leadSrcs
   public statuses = statuses
+  /* Show infomation sale order */
+  public saleOrder: SalesOrder | null;            // Sale order detail 
 
   constructor(
     private salesOrderService: SalesOrderService,
     private contactService: ContactService,
     public activatedRoute: ActivatedRoute,
     public router: Router,
+    public commonService: CommonService,
   ) { }
 
   ngOnInit() {
+    this.commonService.user$.subscribe((user) => {
+      this.admin = user.isAdmin;
+    });
     this.activatedRoute.queryParams.subscribe(params => {
       this.revenueContact(params);
       this.revenueSalesOrder(params);
@@ -121,6 +130,8 @@ export class DashboardComponent implements OnInit {
   }
 
   onRecord(event) {
-    console.log(event)
+    this.salesOrderService.getSalesOrderDetail(event._id).subscribe((data) => {
+      this.saleOrder = data.data.saleOrder;
+    })
   }
 }
