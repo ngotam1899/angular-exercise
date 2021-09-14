@@ -34,10 +34,22 @@ export class ConfirmDeleteComponent implements OnInit {
           this.notifyService.showSuccess("Delete contact successfully", "Success")
         });
         return;
+      case "CONTACT_MULTI":
+        this.contactService.deleteMultiContacts(this.data.id).subscribe((data) => {
+          this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Delete multiple contacts successfully", "Success")
+        });
+        return;
       case "SALES_ORDER":
         this.salesOrderService.deleteSalesOrder(this.data.id).subscribe((data) => {
           this.dialogRef.close({ data });
-          this.notifyService.showSuccess("Delete contact successfully", "Success")
+          this.notifyService.showSuccess("Delete sale order successfully", "Success")
+        });
+        return;
+      case "SALES_ORDER_MULTI":
+        this.salesOrderService.deleteMultiSalesOrders(this.data.id).subscribe((data) => {
+          this.dialogRef.close({ data });
+          this.notifyService.showSuccess("Delete multiple sales order successfully", "Success")
         });
         return;
       default:

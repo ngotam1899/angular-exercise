@@ -7,7 +7,7 @@ const SalesOrder = new Schema({
     contactName : { type: String, ref: 'Contact', required: true },
     status: { type: String, required: true },
     // (0) Created, (1) Approved, (2) Delivered, (3) Cancelled
-    total: { type: String, required: true },
+    total: { type: Number, required: true },
     assignedTo: { type: String, ref: 'User', required: true },
     creator: { type: String, ref: 'User', required: true },
     description: { type: String, required: false },

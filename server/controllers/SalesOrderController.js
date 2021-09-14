@@ -11,17 +11,35 @@ This model will interact with database to store or update data.
 class SalesOrderController {
     // [POST] /sales_order - function to store a sale order information
     storeSalesOrder = async(req, res) =>{
-      const { contactName } = req.body;
-      const contact = await Contact.findOne({ contactName })
       let saleOrder = new SalesOrder(req.body);
-      saleOrder.assignedTo = contact.assignedTo;
       await saleOrder.save()
       return apiResponse.successResponse(res, 'Add sale order successfully');
+    }
+
+    // [GET] /sales_order/revenue - function to get the revenue figures of contacts
+    revenueSalesOrders = async (req, res) => {
+      try {
+        const pipeline = [{
+          '$group': {
+            '_id': "$status",
+            'count': { '$sum': 1 }
+          }
+        }];
+        const salesOrder = await SalesOrder.aggregate(pipeline);
+        const total = await SalesOrder.countDocuments();
+        return apiResponse.successResponseWithData(res, 'Success', {
+          salesOrder,
+          total
+        });
+      } catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [GET] /sales_order - function to get a list of sales order information
     getListOfSalesOrders = async (req, res) =>{
       try{
+        /* Condition area */
         const condition = {};
         let limit = 8;
         let page = 0;
@@ -32,6 +50,13 @@ class SalesOrderController {
         }
         if (req.query.status != undefined && req.query.status != '' && req.query.status != '-1') {
           condition.status = req.query.status;
+        }
+        if (req.query.from != undefined && req.query.from != '' && 
+            req.query.to != undefined && req.query.to != '') {
+          condition.createdTime = { 
+            $gte: req.query.from,
+            $lte: req.query.to 
+          }
         }
         /* Pagination */
         if (req.query.limit != undefined && req.query.limit != '') {
@@ -47,11 +72,21 @@ class SalesOrderController {
           }
         }
         /* Pagination */
+        /* Condition area */
+
+        /* Sorting area */
+        let sort = {};
+        if (req.query.sortBy != undefined && req.query.sortBy != ''
+        && req.query.sortValue != undefined && req.query.sortValue != '') {
+          sort[req.query.sortBy] = req.query.sortValue;
+        }
+        /* Sorting area */
         const isAdmin = req.isAdmin;
         if(!isAdmin){
           condition.assignedTo = req.username;
           let salesOrder = await SalesOrder
             .find(condition)
+            .sort(sort)
             .limit(limit)
             .skip(limit * page);
           total = await SalesOrder.countDocuments(condition);
@@ -73,6 +108,7 @@ class SalesOrderController {
         else{
           let salesOrder = await SalesOrder
             .find(condition)
+            .sort(sort)
             .limit(limit)
 			      .skip(limit * page);
           total = await SalesOrder.countDocuments(condition);
@@ -145,20 +181,14 @@ class SalesOrderController {
     }
 
     // [POST] /delete - function to delete multi sales orders information by list of sales orders ID
-    deleteMultiSalesOrders(req, res){
-        let salesOrderIds = req.body;
-        setTimeout(() => {
-            try{
-                SalesOrder
-                    .remove({ _id: { $in : salesOrderIds } })
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Delete sales orders successfully');
-                    });
-
-            } catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    deleteMultiSalesOrders = async (req, res) =>{
+      let salesOrderIds = req.body;
+      try{
+        await SalesOrder.remove({ _id: { $in : salesOrderIds } })
+        return apiResponse.successResponse(res, 'Delete sales orders successfully');
+      } catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [GET] /latest - function to find sales orders by subject

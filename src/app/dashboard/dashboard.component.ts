@@ -7,6 +7,8 @@ import { ContactService } from '../shared/services/contact.service';
 import { SalesOrderService } from '../shared/services/sales-order.service';
 import { CommonService } from '../shared/services/common.service';
 import { statuses, leadSrcs } from '../shared/constants'
+import { ChartType, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 interface IParams {
   leadSrc?: string;
@@ -44,6 +46,33 @@ export class DashboardComponent implements OnInit {
   /* Show infomation sale order */
   public saleOrder: SalesOrder | null;            // Sale order detail 
 
+  /* Pie chart area */
+  public pieChartOptions: ChartOptions = {
+    responsive: true,
+    legend: {
+      position: 'top',
+    },
+    plugins: {
+      datalabels: {
+        formatter: (value, ctx) => {
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+          return label;
+        },
+      },
+    }
+  };
+  public pieChartLabelsContacts: Label[] = [];
+  public pieChartDataContacts: number[] = []
+  public pieChartType: ChartType = 'pie';
+  public pieChartLegend = true;  // Chú thích
+  public pieChartPlugins = [];
+  public pieChartColors = [{
+    backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
+  }];
+  public pieChartLabelsSalesOrder: Label[] = [];
+  public pieChartDataSalesOrder: number[] = []
+  /* Pie chart area */
+
   constructor(
     private salesOrderService: SalesOrderService,
     private contactService: ContactService,
@@ -56,6 +85,14 @@ export class DashboardComponent implements OnInit {
     this.commonService.user$.subscribe((user) => {
       this.admin = user.isAdmin;
     });
+    this.contactService.revenueContacts().subscribe((data) => {
+      this.pieChartLabelsContacts = data.data.contacts.map((item) => item['_id']);
+      this.pieChartDataContacts = data.data.contacts.map((item) => item['count']);
+    })
+    this.salesOrderService.revenueSalesOrder().subscribe((data) => {
+      this.pieChartLabelsSalesOrder = data.data.salesOrder.map((item) => item['_id']);
+      this.pieChartDataSalesOrder = data.data.salesOrder.map((item) => item['count']);
+    })
     this.activatedRoute.queryParams.subscribe(params => {
       this.revenueContact(params);
       this.revenueSalesOrder(params);
@@ -91,6 +128,7 @@ export class DashboardComponent implements OnInit {
     }, (err) => {
       this.err = err;
     })
+
   }
 
   revenueSalesOrder(queryParams? : IParams){

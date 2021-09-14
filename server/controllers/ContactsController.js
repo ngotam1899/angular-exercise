@@ -19,9 +19,30 @@ class ContactsController {
       }
     }
 
+    // [GET] /contacts/revenue - function to get the revenue figures of contacts
+    revenueContacts = async (req, res) => {
+      try {
+        const pipeline = [{
+          '$group': {
+            '_id': "$leadSrc",
+            'count': { '$sum': 1 }
+          }
+        }];
+        const contacts = await Contacts.aggregate(pipeline);
+        const total = await Contacts.countDocuments();
+        return apiResponse.successResponseWithData(res, 'Success', {
+          contacts,
+          total
+        });
+      } catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
+    }
+
     // [GET] /contacts - function to get a list of contacts information
-    getListOfContacts  = async (req, res) => {
-      try{
+    getListOfContacts = async (req, res) => {
+      try {
+        /* Condition area */
         const condition = {};
         let limit = 8;
         let page = 0;
@@ -50,10 +71,20 @@ class ContactsController {
           }
         }
         /* Pagination */
+        /* Condition area */
+
+        /* Sorting area */
+        let sort = {};
+        if (req.query.sortBy != undefined && req.query.sortBy != ''
+        && req.query.sortValue != undefined && req.query.sortValue != '') {
+          sort[req.query.sortBy] = req.query.sortValue;
+        }
+        /* Sorting area */
         const isAdmin = req.isAdmin;
         if(!isAdmin){
           condition.assignedTo = req.username;
           const contacts = await Contacts.find(condition)
+          .sort(sort)
           .limit(limit)
 			    .skip(limit * page);
           total = await Contacts.countDocuments(condition);
@@ -72,6 +103,7 @@ class ContactsController {
         }
         else {
           const contacts = await Contacts.find(condition)
+          .sort(sort)
           .limit(limit)
 			    .skip(limit * page);
           total = await Contacts.countDocuments(condition);
@@ -142,19 +174,14 @@ class ContactsController {
     }
 
     // [POST] /delete - function to delete multi contacts information by list of contact ID
-    multiDeleteContact(req, res){
-        let contactIds = req.body;
-        setTimeout(() => {
-            try{
-                Contacts
-                    .remove({ _id: { $in : contactIds }})
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Delete list of contacts successfully');
-                    })
-            }catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    deleteMultiContacts = async (req, res) =>{
+      let contactIds = req.body;
+      try {
+        await Contacts.remove({ _id: { $in : contactIds }})
+        return apiResponse.successResponse(res, 'Delete list of contacts successfully');
+      } catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [GET] /search/:contactName - function to find contacts by contact name

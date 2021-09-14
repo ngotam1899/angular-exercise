@@ -14,4 +14,8 @@ export interface IParamsSalesOrder {
   limit?: number;
   keyword?: string;
   status?: string;
+  from?: string;
+  to?: string;
+  sortBy?: string;
+  sortValue?: string;
 }

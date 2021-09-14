@@ -21,8 +21,14 @@
       <mat-label>Phone</mat-label>
       <input formControlName="phone" matInput  />
     </mat-form-field>
-    <mat-checkbox formControlName="isAdmin" >Is admin</mat-checkbox>
-    <mat-checkbox formControlName="isActive" >Is active</mat-checkbox>
+    <div class="row">
+      <div class="col-6">
+        <mat-checkbox formControlName="isAdmin" >Is admin</mat-checkbox>
+      </div>
+      <div class="col-6">
+        <mat-checkbox formControlName="isActive" >Is active</mat-checkbox>
+      </div>
+    </div>
   </div>
   <div mat-dialog-actions>
     <button mat-button type="submit" mat-raised-button>Submit</button>

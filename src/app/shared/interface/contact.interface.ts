@@ -1,7 +1,7 @@
 export interface Contact {
   _id: string;
   contactName: string;
-  salutation: string;
+  salutation?: string;
   mobilePhone: string;
   email?: string;
   organization?: string;
@@ -19,4 +19,6 @@ export interface IParamsContact {
   keyword?: string;
   leadSrc?: string;
   assignedTo?: string;
+  sortBy?: string;
+  sortValue?: string;
 }

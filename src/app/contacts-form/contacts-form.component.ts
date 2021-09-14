@@ -30,7 +30,8 @@ export class ContactsFormComponent implements OnInit {
   public leadSrcs = leadSrcs;
   public userList: User[];
   public creator: string;                   // Creator is the current user
-  public admin: boolean; 
+  public admin: boolean;
+  public salutations: String[] = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof."];
 
   constructor(
     private formBuilder : FormBuilder,
@@ -45,9 +46,9 @@ export class ContactsFormComponent implements OnInit {
   createForm(){
     this.formContact = this.formBuilder.group({
       contactName: [this.data.contactName, [ Validators.required ]],
-      salutation: [this.data.salutation, [ Validators.required ]],
+      salutation: [this.data.salutation],
       mobilePhone: [this.data.mobilePhone, [ Validators.required ]],
-      email: [this.data.email],
+      email: [this.data.email, [Validators.pattern("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$")]],
       organization: [this.data.organization],
       dob: [this.data.dob],
       leadSrc: [this.data.leadSrc, [ Validators.required ]],

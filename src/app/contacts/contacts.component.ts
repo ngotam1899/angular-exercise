@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Sort } from '@angular/material/sort';
 import { Contact, IParamsContact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
 import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
 import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../shared/services/common.service';
+import { leadSrcs } from '../shared/constants'
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-contacts',
@@ -13,17 +16,23 @@ import { CommonService } from '../shared/services/common.service';
   styleUrls: ['./contacts.component.scss']
 })
 export class ContactsComponent implements OnInit {
-  public displayedColumns: string[] = ['index', 'contactName', 'salutation', 'mobilePhone', 'leadSrc', 'actions'];
+  public leadSrcs = leadSrcs;
+  public displayedColumns: string[] = ['checkbox', 'index', 'salutation', 'contactName', 'mobilePhone', 'leadSrc', 'actions'];
   public dataSource : Contact[];
+  public selection = new SelectionModel<string>(true, []);
   public contact: Contact;          // Contact detail
   public err: string = '';          // Error display
   public keyword: string = '';      // Keyword to search
   public leadSrc: string            // Leader source
   public queryParams: IParamsContact;      // Query parameters
+  public queryCount: number = 0;
   public total: number;             // Total data
   public limit: number = 8;         // (Pagination) Limit data in one page
   public page: number = 0;          // (Pagination) Current page
   public admin: boolean = false;
+  /* Sorting */
+  public sortBy: string;
+  public sortValue: string;
 
   constructor(
     private contactService: ContactService,
@@ -40,10 +49,13 @@ export class ContactsComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.loadData(params);
       this.queryParams = params;
+      this.queryCount = Object.keys(params).length;
       this.keyword = params['keyword'];
       this.page = params['page'];
       this.limit = params['limit'];
       this.leadSrc = params['leadSrc'];
+      this.sortValue = params['sortValue'];
+      this.sortBy = params['sortBy'];
     })
   }
 
@@ -118,7 +130,7 @@ export class ContactsComponent implements OnInit {
     });
   }
 
-  openConfirm(type: string, id: string): void {
+  openConfirm(type: string, id: any): void {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '300px',
       data: {
@@ -129,5 +141,43 @@ export class ContactsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.loadData(this.queryParams)
     });
+  }
+
+  onFilterLeadSrc(leadSrc: string){
+    this.handleUpdateFilter({
+      leadSrc,
+      page: 0
+    })
+  }
+
+  onDestroyFilter(){
+    const pathname = location.pathname;
+    this.router.navigate([`${pathname}`])
+  }
+
+  onSort(sort: Sort) {
+    this.handleUpdateFilter({
+      sortBy: sort.active,
+      sortValue: sort.direction
+    })
+  }
+
+    /* Delete all */
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.forEach(row => this.selection.select(row._id));
+  }
+
+  onDeleteAll(){
+    this.openConfirm("CONTACT_MULTI", this.selection.selected);
   }
 }

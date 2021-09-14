@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Sort } from '@angular/material/sort';
+import { FormControl } from '@angular/forms';
 import { SalesOrder, IParamsSalesOrder } from '../shared/interface/sales-order.interface';
 import { SalesOrderService } from '../shared/services/sales-order.service';
 import { SalesOrderFormComponent } from '../sales-order-form/sales-order-form.component'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 import { CommonService } from '../shared/services/common.service';
+import { statuses } from '../shared/constants'
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-sales-order',
@@ -13,17 +17,26 @@ import { CommonService } from '../shared/services/common.service';
   styleUrls: ['./sales-order.component.scss']
 })
 export class SalesOrderComponent implements OnInit {
-  public displayedColumns: string[] = ['index', 'subject', 'contactName', 'status', 'total', 'actions'];
+  public statuses = statuses;
+  public displayedColumns: string[] = ['checkbox', 'index', 'subject', 'contactName', 'status', 'total', 'actions'];
   public dataSource : SalesOrder[];
+  public selection = new SelectionModel<string>(true, []);
   public err: string = '';               // Error display
   public saleOrder: SalesOrder;          // Sale Order detail
   public keyword: string = '';           // Keyword to search
   public queryParams: IParamsSalesOrder; // Query parameters
+  public queryCount: number = 0;
   public total: number;                  // Total data
   public status: string;                 // Status order
   public limit: number = 8;              // (Pagination) Limit data in one page
   public page: number = 0;               // (Pagination) Current page
   public admin: boolean = false;
+  /* Filter period */
+  from = new FormControl()
+  to = new FormControl()
+  /* Sorting */
+  public sortBy: string;
+  public sortValue: string;
 
   constructor(
     private salesOrderService: SalesOrderService,
@@ -40,10 +53,15 @@ export class SalesOrderComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.loadData(params);
       this.queryParams = params;
+      this.queryCount = Object.keys(params).length;
       this.keyword = params['keyword'];
       this.page = params['page'];
       this.limit = params['limit'];
       this.status = params['status'];
+      this.sortBy = params['sortBy'];
+      this.sortValue = params['sortValue'];
+      this.from.setValue(new Date(+params['from']));
+      this.to.setValue(new Date(+params['to']));
     })
   }
 
@@ -114,7 +132,7 @@ export class SalesOrderComponent implements OnInit {
     });
   }
 
-  openConfirm(type: string, id: string): void {
+  openConfirm(type: string, id: any): void {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '300px',
       data: {
@@ -125,5 +143,49 @@ export class SalesOrderComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.loadData(this.queryParams)
     });
+  }
+
+  onFilterStatus(status: string){
+    this.handleUpdateFilter({
+      status,
+      page: 0
+    })
+  }
+
+  onFilterPeriod(name: string, event){
+    this.handleUpdateFilter({
+      [name]: new Date(event.target.value).valueOf()
+    })
+  }
+
+  onDestroyFilter(){
+    const pathname = location.pathname;
+    this.router.navigate([`${pathname}`])
+  }
+
+  onSort(sort: Sort) {
+    this.handleUpdateFilter({
+      sortBy: sort.active,
+      sortValue: sort.direction
+    })
+  }
+
+  /* Delete all */
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.forEach(row => this.selection.select(row._id));
+  }
+
+  onDeleteAll(){
+    this.openConfirm("SALES_ORDER_MULTI", this.selection.selected);
   }
 }

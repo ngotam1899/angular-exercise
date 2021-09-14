@@ -26,6 +26,19 @@
         </mat-card>
       </div>
       <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+        <div class="chart">
+          <canvas baseChart
+            [data]="pieChartDataContacts"
+            [labels]="pieChartLabelsContacts"
+            [chartType]="pieChartType"
+            [options]="pieChartOptions"
+            [plugins]="pieChartPlugins"
+            [colors]="pieChartColors"
+            [legend]="pieChartLegend">
+          </canvas>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
         <mat-card>
           <mat-card-header>
             <mat-card-title>{{totalSalesOrder}}</mat-card-title>
@@ -42,62 +55,31 @@
             </mat-menu>
           </mat-card-header>
           <mat-card-content>
-            <button mat-button (click)="onRedirect('sales-order')">Number of sales by {{status | status}}</button>
+            <button class="btn-break-content" mat-button (click)="onRedirect('sales-order')">Number of sales by {{status | status}}</button>
           </mat-card-content>
         </mat-card>
+      </div>
+      
+      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+        <div class="chart">
+          <canvas baseChart
+            [data]="pieChartDataSalesOrder"
+            [labels]="pieChartLabelsSalesOrder"
+            [chartType]="pieChartType"
+            [options]="pieChartOptions"
+            [plugins]="pieChartPlugins"
+            [colors]="pieChartColors"
+            [legend]="pieChartLegend">
+          </canvas>
+        </div>
       </div>
     </div>
     <mat-divider></mat-divider>
     <div *ngIf="admin" class="row">
       <div class="col-12 col-md-6">
         <h3>New contacts in the last 7 days</h3>
-        <table mat-table [dataSource]="dataSourceContact" class="mat-elevation-z8">
-          <!--- Note that these columns can be defined in any order.
-                The actual rendered columns are set as a property on the row definition" -->
-
-          <!-- Index Column -->
-          <ng-container matColumnDef="index">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
-            <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
-          </ng-container>
-
-          <!-- Contact name Column -->
-          <ng-container matColumnDef="contactName">
-            <th mat-header-cell *matHeaderCellDef> Contact name </th>
-            <td mat-cell *matCellDef="let element"> {{element.contactName}} </td>
-          </ng-container>
-
-          <!-- Assigned to Column -->
-          <ng-container matColumnDef="assignedTo">
-            <th mat-header-cell *matHeaderCellDef> Assigned to </th>
-            <td mat-cell *matCellDef="let element">
-              <button mat-button (click)="onRedirect('contacts', element.assignedTo)">{{element.assignedTo}} </button>
-            </td>
-          </ng-container>
-
-          <!-- Created time Column -->
-          <ng-container matColumnDef="createdTime">
-            <th mat-header-cell *matHeaderCellDef> Created time </th>
-            <td mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy'}} </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsContact"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsContact;"></tr>
-        </table>
-        <mat-paginator
-          *ngIf="total_Contact >= 8"
-          [length]="total_Contact"
-          [pageSize]="limitContact"
-          [pageIndex]="pageContact"
-          [pageSizeOptions]="[8, 12]"
-          (page)="onPageChangeContact($event)"
-          >
-        </mat-paginator>
-      </div>
-      <div class="col-12 col-md-6">
-        <h3>New sales orders in the last 7 days</h3>
-        <div *ngIf="!saleOrder; else showInfo">
-          <table mat-table [dataSource]="dataSourceSalesOrder" class="mat-elevation-z8">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSourceContact">
             <!--- Note that these columns can be defined in any order.
                   The actual rendered columns are set as a property on the row definition" -->
 
@@ -107,16 +89,18 @@
               <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
             </ng-container>
 
-            <!-- Subject Column -->
-            <ng-container matColumnDef="subject">
-              <th mat-header-cell *matHeaderCellDef> Subject </th>
-              <td mat-cell *matCellDef="let element"> {{element.subject}} </td>
+            <!-- Contact name Column -->
+            <ng-container matColumnDef="contactName">
+              <th mat-header-cell *matHeaderCellDef> Contact name </th>
+              <td mat-cell *matCellDef="let element"> {{element.contactName}} </td>
             </ng-container>
 
-            <!-- Total Column -->
-            <ng-container matColumnDef="total">
-              <th mat-header-cell *matHeaderCellDef> Total </th>
-              <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+            <!-- Assigned to Column -->
+            <ng-container matColumnDef="assignedTo">
+              <th mat-header-cell *matHeaderCellDef> Assigned to </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-button (click)="onRedirect('contacts', element.assignedTo)">{{element.assignedTo}} </button>
+              </td>
             </ng-container>
 
             <!-- Created time Column -->
@@ -125,9 +109,65 @@
               <td mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy'}} </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsSalesOrder"></tr>
-            <tr mat-row class="record" *matRowDef="let row; columns: displayedColumnsSalesOrder;" (click)="onRecord(row)"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsContact"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsContact;"></tr>
           </table>
+          <mat-paginator
+            *ngIf="total_Contact >= 8"
+            [length]="total_Contact"
+            [pageSize]="limitContact"
+            [pageIndex]="pageContact"
+            [pageSizeOptions]="[8, 12]"
+            (page)="onPageChangeContact($event)"
+            >
+          </mat-paginator>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <h3>New sales orders in the last 7 days</h3>
+        <div *ngIf="!saleOrder; else showInfo">
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSourceSalesOrder">
+              <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+              <!-- Index Column -->
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef> No. </th>
+                <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+              </ng-container>
+
+              <!-- Subject Column -->
+              <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef> Subject </th>
+                <td mat-cell *matCellDef="let element"> {{element.subject}} </td>
+              </ng-container>
+
+              <!-- Total Column -->
+              <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef> Total </th>
+                <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+              </ng-container>
+
+              <!-- Created time Column -->
+              <ng-container matColumnDef="createdTime">
+                <th mat-header-cell *matHeaderCellDef> Created time </th>
+                <td mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy'}} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsSalesOrder"></tr>
+              <tr mat-row class="record" *matRowDef="let row; columns: displayedColumnsSalesOrder;" (click)="onRecord(row)"></tr>
+            </table>
+            <mat-paginator
+              *ngIf="total_SalesOrder >= 8"
+              [length]="total_SalesOrder"
+              [pageSize]="limitSalesOrder"
+              [pageIndex]="pageSalesOrder"
+              [pageSizeOptions]="[8, 12]"
+              (page)="onPageChangeSalesOrder($event)"
+              >
+            </mat-paginator>
+          </div>
         </div>
         <ng-template #showInfo>
           <mat-card>
@@ -140,8 +180,8 @@
             </mat-card-header>
             <mat-divider></mat-divider>
             <mat-card-content>
-              <div class="row pt-3 text-center">
-                <div class="col-12 px-4">
+              <div class="row pt-3">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>contacts</mat-icon>
                   </div>
@@ -150,7 +190,7 @@
                     <input matInput value={{saleOrder.contactName}} readonly />
                   </mat-form-field>
                 </div>
-                <div class="col-12 px-4">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>contact_support</mat-icon>
                   </div>
@@ -159,7 +199,7 @@
                     <input matInput value={{saleOrder.status}} readonly />
                   </mat-form-field>
                 </div>
-                <div class="col-12 px-4">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>summarize</mat-icon>
                   </div>
@@ -168,7 +208,7 @@
                     <input matInput value={{saleOrder.total}} readonly />
                   </mat-form-field>
                 </div>
-                <div class="col-12 px-4">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>assignment_ind</mat-icon>
                   </div>
@@ -177,7 +217,7 @@
                     <input matInput value={{saleOrder.assignedTo}} readonly />
                   </mat-form-field>
                 </div>
-                <div class="col-12 px-4">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>account_circle</mat-icon>
                   </div>
@@ -186,7 +226,7 @@
                     <input matInput value={{saleOrder.creator}} readonly />
                   </mat-form-field>
                 </div>
-                <div class="col-12 px-4">
+                <div class="col-6">
                   <div class="form-icon">
                     <mat-icon>info</mat-icon>
                   </div>
@@ -199,15 +239,6 @@
             </mat-card-content>
           </mat-card>
         </ng-template>
-        <mat-paginator
-          *ngIf="total_SalesOrder >= 8"
-          [length]="total_SalesOrder"
-          [pageSize]="limitSalesOrder"
-          [pageIndex]="pageSalesOrder"
-          [pageSizeOptions]="[8, 12]"
-          (page)="onPageChangeSalesOrder($event)"
-          >
-        </mat-paginator>
       </div>
     </div>
   </div>

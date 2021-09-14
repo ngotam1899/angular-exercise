@@ -14,6 +14,7 @@ import { map, startWith } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { statuses } from '../shared/constants'
 import { NotificationService } from '../shared/services/notification.service';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-sales-order-form',
@@ -25,14 +26,18 @@ export class SalesOrderFormComponent implements OnInit {
   public statuses = statuses;             // Get list status value
   public creator: string;                   // Creator is the current user
   public admin: boolean;
-  public contactList: Contact[]           // Get contact list
+  private contactList: Contact[]           // Get contact list
   contactName = new FormControl();        // Display contact list
-  filteredStates: Observable<Contact[]>;  //
+  filteredContact: Observable<Contact[]>;  //
+  private userList: User[];
+  assignedTo = new FormControl();
+  filteredUser: Observable<User[]>;
 
   constructor(
     private formBuilder : FormBuilder,
     public salesOrderService: SalesOrderService,
     public contactService: ContactService,
+    public userService: UserService,
     public commonService : CommonService,
     public dialogRef: MatDialogRef<SalesOrderFormComponent>,
     private notifyService : NotificationService,
@@ -45,10 +50,7 @@ export class SalesOrderFormComponent implements OnInit {
       contactName: [this.data.contactName, [ Validators.required ]],
       status: [this.data.status, [ Validators.required ]],
       total: [this.data.total, [ Validators.required ]],
-      assignedTo: [{
-        value: this.data.assignedTo,
-        disabled: true
-      }, [ Validators.required ]],
+      assignedTo: [this.data.assignedTo, [ Validators.required ]],
       creator: [{
         value: this.data.creator || this.creator,
         disabled: true
@@ -63,19 +65,33 @@ export class SalesOrderFormComponent implements OnInit {
       this.admin = user.isAdmin;
     });
     this.createForm();
-    this.contactService.getContactList().subscribe((data) => {
-      this.contactList = data.data.contacts;
-      this.filteredStates = this.contactName.valueChanges
+    this.userService.getUserList().subscribe((data) => {
+      this.userList = data.data.users;
+      this.filteredUser = this.assignedTo.valueChanges
       .pipe(
         startWith(''),
-        map(state => state ? this._filterStates(state) : this.contactList.slice())
+        map(state => state ? this._filterUser(state) : this.userList.slice())
       );
     });
+    this.contactService.getContactList().subscribe((data) => {
+      this.contactList = data.data.contacts;
+      this.filteredContact = this.contactName.valueChanges
+      .pipe(
+        startWith(''),
+        map(state => state ? this._filterContact(state) : this.contactList.slice())
+      );
+    });
+
   }
 
-  private _filterStates(value: string): Contact[] {
+  private _filterContact(value: string): Contact[] {
     const filterValue = value.toLowerCase();
     return this.contactList.filter(state => state.contactName.toLowerCase().includes(filterValue));
+  }
+
+  private _filterUser(value: string): User[] {
+    const filterValue = value.toLowerCase();
+    return this.userList.filter(state => state.username.toLowerCase().includes(filterValue));
   }
 
   onSubmit(data): void {

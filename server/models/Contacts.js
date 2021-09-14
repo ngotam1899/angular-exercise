@@ -4,7 +4,7 @@ const Schema = mg.Schema;
 
 const Contacts = new Schema({
     contactName : { type: String, required: true, unique: true },
-    salutation: { type: String, required: true },
+    salutation: { type: String, default: '' },
     mobilePhone: { type: String, required: true },
     email: { type: String, required: false },
     organization: { type: String, required: false },

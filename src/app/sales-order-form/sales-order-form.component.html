@@ -1,45 +1,58 @@
 <form [formGroup]="formSalesOrder" (ngSubmit)="onSubmit(formSalesOrder.value)">
 <div mat-dialog-content>
   <h3>{{data._id ? (admin ? 'Edit sale order' : 'Detail sale order') : 'Add new sale order'}}</h3>
-  <mat-form-field>
-    <mat-label>Subject</mat-label>
-    <input matInput formControlName="subject" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Contact name</mat-label>
-    <input matInput
-      formControlName="contactName"
-      [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let state of filteredStates | async" [value]="state.contactName">
-        {{state.contactName}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-    <mat-form-field>
-    <mat-label>Status</mat-label>
-    <mat-select formControlName="status">
-      <mat-option *ngFor="let status of statuses" [value]="status.value">
-        {{status.viewValue}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Total</mat-label>
-    <input matInput formControlName="total" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Assigned to</mat-label>
-    <input matInput formControlName="assignedTo"/>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Creator</mat-label>
-    <input matInput formControlName="creator"/>
-  </mat-form-field>
-   <mat-form-field>
-    <mat-label>Description</mat-label>
-    <input matInput formControlName="description"/>
-  </mat-form-field>
+  <div class="row">
+    <div class="col-6">
+      <mat-form-field>
+        <mat-label>Subject</mat-label>
+        <input matInput formControlName="subject" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Contact name</mat-label>
+        <input matInput
+          formControlName="contactName"
+          [matAutocomplete]="contact">
+        <mat-autocomplete #contact="matAutocomplete">
+          <mat-option *ngFor="let state of filteredContact | async" [value]="state.contactName">
+            {{state.contactName}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+        <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statuses" [value]="status.value">
+            {{status.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Total</mat-label>
+        <input matInput formControlName="total" />
+      </mat-form-field>
+    </div>
+    <div class="col-6">
+      <mat-form-field>
+        <mat-label>Assigned to</mat-label>
+        <input matInput
+            formControlName="assignedTo"
+            [matAutocomplete]="user">
+          <mat-autocomplete #user="matAutocomplete">
+            <mat-option *ngFor="let state of filteredUser | async" [value]="state.username">
+              {{state.username}}
+            </mat-option>
+          </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Creator</mat-label>
+        <input matInput formControlName="creator"/>
+      </mat-form-field>
+       <mat-form-field>
+        <mat-label>Description</mat-label>
+        <input matInput formControlName="description"/>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions>
   <button type="submit" mat-button mat-raised-button *ngIf="admin">Submit</button>

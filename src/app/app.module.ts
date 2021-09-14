@@ -20,12 +20,17 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSortModule } from '@angular/material/sort';
+
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
-
+import { ChartsModule, ThemeService } from 'ng2-charts';
 import { AppComponent } from './app.component';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -42,6 +47,7 @@ import { LeadSrcPipe } from './shared/pipe/lead-src.pipe';
 import { StatusPipe } from './shared/pipe/status.pipe';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +65,7 @@ import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.componen
     StatusPipe,
     ChangePasswordComponent,
     ConfirmDeleteComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,13 +89,19 @@ import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.componen
     MatSelectModule,
     MatAutocompleteModule,
     MatSnackBarModule,
+    MatDatepickerModule,
+    MatButtonToggleModule,
+    MatNativeDateModule,
+    MatSortModule,
 
+    ChartsModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     ToastrModule.forRoot()
   ],
   providers: [
+    ThemeService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true }
   ],
   entryComponents: [

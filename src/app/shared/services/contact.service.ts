@@ -20,12 +20,23 @@ export class ContactService {
 
   constructor(private httpClient: HttpClient) {}
 
+  public revenueContacts() {
+    const url = `${this.REST_API_SERVER}/revenue`;
+    return this.httpClient
+      .get<any>(url)
+      .pipe(catchError(this.handleError));
+  }
+
   public getContactList(queryParams?: IParamsContact) {
     let params = new HttpParams();
     if(queryParams){
       if (queryParams.page && queryParams.limit) {
         params = params.set('page', queryParams.page.toString())
         .set('limit', queryParams.limit.toString());
+      }
+      if (queryParams.sortBy && queryParams.sortValue) {
+        params = params.set('sortBy', queryParams.sortBy.toString())
+        .set('sortValue', queryParams.sortValue.toString());
       }
       if (queryParams.keyword) params = params.set('keyword', queryParams.keyword);
       if (queryParams.leadSrc) params = params.set('leadSrc', queryParams.leadSrc);
@@ -75,6 +86,13 @@ export class ContactService {
   public deleteContact(contactId: string) {
     const url = `${this.REST_API_SERVER}/` + contactId;
     return this.httpClient.delete<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public deleteMultiContacts(data: any) {
+    const url = `${this.REST_API_SERVER}/delete`;
+    return this.httpClient
+      .post<any>(url, data)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
