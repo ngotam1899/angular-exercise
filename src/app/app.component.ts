@@ -1,10 +1,10 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { LoginFormComponent } from './login-form/login-form.component'
 import { ChangePasswordComponent } from './change-password/change-password.component'
 import { MatDialog } from '@angular/material/dialog'
 import { AuthService } from './shared/services/auth.service'
 import { CommonService } from './shared/services/common.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,8 @@ export class AppComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public authService : AuthService,
-    public commonService : CommonService
+    public commonService : CommonService,
+    public router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -51,22 +52,7 @@ export class AppComponent implements OnInit {
   }
 
   openDialogSignin(): void {
-    const dialogRef = this.dialog.open(LoginFormComponent, {
-      width: '300px',
-      data: {
-        username: "",
-        password: "",
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      const username = result && result.data.username;
-      const password = result && result.data.password;
-      const token = result && result.data.token.data.token;
-      if (!!username && !!password && !!token) {
-        this.authService.setToken(token);
-      }
-    });
+    //this.router.navigate([`/login`])
   }
 
   openDialogChangePassword(): void {

@@ -374,9 +374,6 @@ mat-form-field {
 .row:after {
   clear: both;
 }
-.text-center{
-  text-align: center;
-}
 .px-3 {
   padding-right: 1rem !important;
   padding-left: 1rem !important;
@@ -388,6 +385,29 @@ mat-form-field {
 .pt-3 {
   padding-top: 1rem !important;
 }
+.align-items-start {
+  align-items: flex-start !important;
+}
+
+.align-items-end {
+  align-items: flex-end !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+.text-start {
+  text-align: left !important;
+}
+
+.text-end {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
 /* Boostraps */
 .img-error{
   width:500px;

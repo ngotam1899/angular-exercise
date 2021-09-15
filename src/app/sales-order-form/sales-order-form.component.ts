@@ -26,11 +26,9 @@ export class SalesOrderFormComponent implements OnInit {
   public statuses = statuses;             // Get list status value
   public creator: string;                   // Creator is the current user
   public admin: boolean;
-  private contactList: Contact[]           // Get contact list
-  contactName = new FormControl();        // Display contact list
+  private contactList: Contact[] = []           // Get contact list
   filteredContact: Observable<Contact[]>;  //
-  private userList: User[];
-  assignedTo = new FormControl();
+  private userList: User[] = [];
   filteredUser: Observable<User[]>;
 
   constructor(
@@ -65,33 +63,28 @@ export class SalesOrderFormComponent implements OnInit {
       this.admin = user.isAdmin;
     });
     this.createForm();
-    this.userService.getUserList().subscribe((data) => {
-      this.userList = data.data.users;
-      this.filteredUser = this.assignedTo.valueChanges
-      .pipe(
-        startWith(''),
-        map(state => state ? this._filterUser(state) : this.userList.slice())
-      );
-    });
-    this.contactService.getContactList().subscribe((data) => {
-      this.contactList = data.data.contacts;
-      this.filteredContact = this.contactName.valueChanges
-      .pipe(
-        startWith(''),
-        map(state => state ? this._filterContact(state) : this.contactList.slice())
-      );
-    });
-
+    this.filteredUser = this.formSalesOrder.get('assignedTo').valueChanges.pipe(
+      startWith(''),
+      map(state => state ? this._filterUser(state) : this.userList.slice())
+    );
+    this.filteredContact = this.formSalesOrder.get('contactName').valueChanges.pipe(
+      startWith(''),
+      map(state => state ? this._filterContact(state) : this.contactList.slice())
+    );
   }
 
   private _filterContact(value: string): Contact[] {
-    const filterValue = value.toLowerCase();
-    return this.contactList.filter(state => state.contactName.toLowerCase().includes(filterValue));
+    this.contactService.getContactList({keyword: value.toLowerCase()}).subscribe(data => {
+      this.contactList = data.data.contacts
+    })
+    return this.contactList;
   }
 
   private _filterUser(value: string): User[] {
-    const filterValue = value.toLowerCase();
-    return this.userList.filter(state => state.username.toLowerCase().includes(filterValue));
+    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
+      this.userList = data.data.users
+    })
+    return this.userList;
   }
 
   onSubmit(data): void {

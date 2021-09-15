@@ -38,16 +38,6 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div
-      style="
-        height: 90vh;
-        margin-top: 20px;
-        margin-right: 10px;
-        margin-left: 10px;
-      "
-      [ngClass]="{
-        'content-move-left': !isOpened,
-        'content-move-right': isOpened
-      }"
     >
       <router-outlet></router-outlet>
     </div>

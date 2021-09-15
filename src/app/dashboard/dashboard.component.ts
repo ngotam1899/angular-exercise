@@ -25,8 +25,10 @@ export class DashboardComponent implements OnInit {
   public err: string = '';              // Error display
   public leadSrc: string = "-1";        // LeadSrc filter
   public totalContact: number = 0;      // Total contact
+  public revenueContact: any[] = [];
   public status: string = "-1";         // Status filter
   public totalSalesOrder: number = 0;   // Total sales order
+  public revenueSalesOrder: any[] = [];
   public queryParams: IParams;          // Query parameters
   /* Contact table */
   public displayedColumnsContact: string[] = ['index', 'contactName', 'assignedTo', 'createdTime'];
@@ -44,13 +46,13 @@ export class DashboardComponent implements OnInit {
   public leadSource = leadSrcs
   public statuses = statuses
   /* Show infomation sale order */
-  public saleOrder: SalesOrder | null;            // Sale order detail 
+  public saleOrder: SalesOrder | null;            // Sale order detail
 
   /* Pie chart area */
   public pieChartOptions: ChartOptions = {
     responsive: true,
     legend: {
-      position: 'top',
+      position: 'left',
     },
     plugins: {
       datalabels: {
@@ -67,7 +69,7 @@ export class DashboardComponent implements OnInit {
   public pieChartLegend = true;  // Chú thích
   public pieChartPlugins = [];
   public pieChartColors = [{
-    backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
+    backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#2C4D75', '#9BBB59'],
   }];
   public pieChartLabelsSalesOrder: Label[] = [];
   public pieChartDataSalesOrder: number[] = []
@@ -85,26 +87,48 @@ export class DashboardComponent implements OnInit {
     this.commonService.user$.subscribe((user) => {
       this.admin = user.isAdmin;
     });
-    this.contactService.revenueContacts().subscribe((data) => {
-      this.pieChartLabelsContacts = data.data.contacts.map((item) => item['_id']);
-      this.pieChartDataContacts = data.data.contacts.map((item) => item['count']);
-    })
-    this.salesOrderService.revenueSalesOrder().subscribe((data) => {
-      this.pieChartLabelsSalesOrder = data.data.salesOrder.map((item) => item['_id']);
-      this.pieChartDataSalesOrder = data.data.salesOrder.map((item) => item['count']);
-    })
+    this.loadRevenueContact();
+    this.loadRevenueSalesOrder();
     this.activatedRoute.queryParams.subscribe(params => {
-      this.revenueContact(params);
-      this.revenueSalesOrder(params);
       this.loadLatestContact(params);
       this.loadLatestSalesOrder(params);
       this.queryParams = params;
-      this.leadSrc = params['leadSrc'] || -1;
-      this.status = params['status'] || -1;
       this.limitContact = params['limitContact'];
       this.pageContact = params['pageContact'];
       this.limitSalesOrder = params['limitSalesOrder'];
       this.pageSalesOrder = params['pageSalesOrder'];
+    })
+  }
+
+  loadRevenueContact(){
+    this.contactService.revenueContacts().subscribe((data) => {
+      this.pieChartLabelsContacts = data.data.contacts.map((item) => item['_id']);
+      this.pieChartDataContacts = data.data.contacts.map((item) => item['count']);
+      for(let i=0; i < leadSrcs.length; i++){
+        for(let j=0; j < this.pieChartLabelsContacts.length; j++){
+          if(leadSrcs[i].value === this.pieChartLabelsContacts[j]){
+            this.pieChartLabelsContacts[j] = leadSrcs[i].viewValue
+          }
+        }
+      }
+      this.totalContact = data.data.total;
+      this.revenueContact = [...data.data.contacts, { _id: "-1", count: this.totalContact}];
+    })
+  }
+
+  loadRevenueSalesOrder(){
+    this.salesOrderService.revenueSalesOrder().subscribe((data) => {
+      this.pieChartLabelsSalesOrder = data.data.salesOrder.map((item) => item['_id']);
+      this.pieChartDataSalesOrder = data.data.salesOrder.map((item) => item['count']);
+      for(let i=0; i < statuses.length; i++){
+        for(let j=0; j < this.pieChartLabelsSalesOrder.length; j++){
+          if(statuses[i].value === this.pieChartLabelsSalesOrder[j]){
+            this.pieChartLabelsSalesOrder[j] = statuses[i].viewValue
+          }
+        }
+      }
+      this.totalSalesOrder = data.data.total;
+      this.revenueSalesOrder = [...data.data.salesOrder, { _id: "-1", count: this.totalSalesOrder}];
     })
   }
 
@@ -120,21 +144,6 @@ export class DashboardComponent implements OnInit {
       this.dataSourceSalesOrder = data.data.salesOrder;
       this.total_SalesOrder = data.data.total;
     });
-  }
-
-  revenueContact(queryParams? : IParams){
-    this.salesOrderService.getSalesOrderList(queryParams).subscribe((data) => {
-      this.totalSalesOrder = data.data.total;
-    }, (err) => {
-      this.err = err;
-    })
-
-  }
-
-  revenueSalesOrder(queryParams? : IParams){
-    this.contactService.getContactList(queryParams).subscribe((data) => {
-      this.totalContact = data.data.total;
-    })
   }
 
   handleUpdateFilter = (data: any) => {
@@ -171,5 +180,41 @@ export class DashboardComponent implements OnInit {
     this.salesOrderService.getSalesOrderDetail(event._id).subscribe((data) => {
       this.saleOrder = data.data.saleOrder;
     })
+  }
+
+  getStatus(status: string){
+    this.status = status;
+    this.queryParams = { ...this.queryParams, status };
+    const found = this.revenueSalesOrder.find(s => s._id === status)
+    this.totalSalesOrder = found ? found.count : 0;
+  }
+
+  getLeadSrc(leadSrc: string){
+    this.leadSrc = leadSrc;
+    this.queryParams = { ...this.queryParams, leadSrc };
+    const found = this.revenueContact.find(s => s._id === leadSrc)
+    this.totalContact = found ? found.count : 0;
+  }
+
+  chartClicked(e, url: string){
+    if (e.active.length > 0) {
+    const chart = e.active[0]._chart;
+    const activePoints = chart.getElementAtEvent(e.event);
+      if ( activePoints.length > 0) {
+        // get the internal index of slice in pie chart
+        const clickedElementIndex = activePoints[0]._index;
+        const label = chart.data.labels[clickedElementIndex];
+        // get value by index
+        const value = chart.data.datasets[0].data[clickedElementIndex];
+        if(url === "sales-order") {
+          this.queryParams = { ...this.queryParams, status: statuses.find(s => s.viewValue === label).value };
+          this.onRedirect("sales-order")
+        }
+        else {
+          this.queryParams = { ...this.queryParams, leadSrc: leadSrcs.find(s => s.viewValue === label).value };
+          this.onRedirect("contacts")
+        }
+      }
+    }
   }
 }

@@ -1,9 +1,15 @@
 <div class="container">
   <h1>User management</h1>
-  <mat-form-field class="ml-auto w-50">
-    <input matInput placeholder="Input subject to search" [(ngModel)]="keyword" (keyup.Enter)="onSearch($event)">
-  </mat-form-field>
-  <button mat-raised-button color="accent" class="float-right" (click)="onAdd()">Add an user</button>
+  <div class="row">
+    <div class="col-6">
+      <mat-form-field class="ml-auto">
+        <input matInput placeholder="Input subject to search" [(ngModel)]="keyword" (keyup.Enter)="onSearch($event)">
+      </mat-form-field>
+    </div>
+    <div class="col-6">
+      <button mat-raised-button color="accent" class="float-right" (click)="onAdd()">Add an user</button>
+    </div>
+  </div>
   <div *ngIf="total" class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
       <!--- Note that these columns can be defined in any order.

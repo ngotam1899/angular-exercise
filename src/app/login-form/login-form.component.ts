@@ -20,6 +20,7 @@ export interface Authorization {
 })
 export class LoginFormComponent implements OnInit {
   public formLogin: FormGroup;
+  hide = true;
 
   constructor(
     private formBuilder : FormBuilder,

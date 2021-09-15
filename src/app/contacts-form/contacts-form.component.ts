@@ -8,9 +8,9 @@ import {
 } from '@angular/material/dialog';
 import { User } from '../shared/interface/user.interface';
 import { UserService } from '../shared/services/user.service';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { leadSrcs } from '../shared/constants'
 import { NotificationService } from '../shared/services/notification.service';
 
@@ -28,10 +28,11 @@ export interface State {
 export class ContactsFormComponent implements OnInit {
   public formContact: FormGroup;
   public leadSrcs = leadSrcs;
-  public userList: User[];
+  public userList: User[] = [];
   public creator: string;                   // Creator is the current user
   public admin: boolean;
   public salutations: String[] = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof."];
+  public filteredStates: Observable<any[]>;
 
   constructor(
     private formBuilder : FormBuilder,
@@ -62,12 +63,12 @@ export class ContactsFormComponent implements OnInit {
     })
   }
 
-  assignedTo = new FormControl();
-  filteredStates: Observable<User[]>;
 
-  private _filterStates(value: string): User[] {
-    const filterValue = value.toLowerCase();
-    return this.userList.filter(state => state.username.toLowerCase().includes(filterValue));
+  private _filterStates(value: string) {
+    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
+      this.userList = data.data.users
+    })
+    return this.userList;
   }
 
   ngOnInit() {
@@ -76,14 +77,12 @@ export class ContactsFormComponent implements OnInit {
       this.admin = user.isAdmin
     });
     this.createForm();
-    this.userService.getUserList().subscribe((data) => {
-      this.userList = data.data.users;
-      this.filteredStates = this.assignedTo.valueChanges
-      .pipe(
-        startWith(''),
-        map(state => state ? this._filterStates(state) : this.userList.slice())
-      );
-    });
+    this.filteredStates = this.formContact.get('assignedTo').valueChanges.pipe(
+      startWith(''),
+      debounceTime(1000),
+      distinctUntilChanged(),
+      map(name => name ? this._filterStates(name) : this.userList.slice())
+    );
   }
 
   onSubmit(data): void {

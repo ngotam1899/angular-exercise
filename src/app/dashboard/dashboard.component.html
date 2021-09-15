@@ -11,13 +11,13 @@
               <mat-icon>gavel</mat-icon>
             </button>
             <mat-menu #menuContract="matMenu">
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : -1})">All contracts</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 0})">Existing Customer</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 1})">Partner</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 2})">Conference</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 3})">Website</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 4})">Word of mouth</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({leadSrc : 5})">Other</button>
+              <button mat-menu-item (click)="getLeadSrc('-1')">All contracts</button>
+              <button mat-menu-item (click)="getLeadSrc('0')">Existing Customer</button>
+              <button mat-menu-item (click)="getLeadSrc('1')">Partner</button>
+              <button mat-menu-item (click)="getLeadSrc('2')">Conference</button>
+              <button mat-menu-item (click)="getLeadSrc('3')">Website</button>
+              <button mat-menu-item (click)="getLeadSrc('4')">Word of mouth</button>
+              <button mat-menu-item (click)="getLeadSrc('5')">Other</button>
             </mat-menu>
           </mat-card-header>
           <mat-card-content>
@@ -34,7 +34,8 @@
             [options]="pieChartOptions"
             [plugins]="pieChartPlugins"
             [colors]="pieChartColors"
-            [legend]="pieChartLegend">
+            [legend]="pieChartLegend"
+            (chartClick)="chartClicked($event, 'contacts')">
           </canvas>
         </div>
       </div>
@@ -47,11 +48,11 @@
               <mat-icon>receipt</mat-icon>
             </button>
             <mat-menu #menuSale="matMenu">
-              <button mat-menu-item (click)="this.handleUpdateFilter({status : -1})">All sales</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({status : 0})">Created</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({status : 1})">Approved</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({status : 2})">Delivered</button>
-              <button mat-menu-item (click)="this.handleUpdateFilter({status : 3})">Cancelled</button>
+              <button mat-menu-item (click)="getStatus('-1')">All sales</button>
+              <button mat-menu-item (click)="getStatus('0')">Created</button>
+              <button mat-menu-item (click)="getStatus('1')">Approved</button>
+              <button mat-menu-item (click)="getStatus('2')">Delivered</button>
+              <button mat-menu-item (click)="getStatus('3')">Cancelled</button>
             </mat-menu>
           </mat-card-header>
           <mat-card-content>
@@ -59,7 +60,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      
+
       <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
         <div class="chart">
           <canvas baseChart
@@ -69,7 +70,8 @@
             [options]="pieChartOptions"
             [plugins]="pieChartPlugins"
             [colors]="pieChartColors"
-            [legend]="pieChartLegend">
+            [legend]="pieChartLegend"
+            (chartClick)="chartClicked($event, 'sales-order')">
           </canvas>
         </div>
       </div>

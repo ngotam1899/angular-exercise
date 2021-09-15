@@ -3,12 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { Contact, IParamsContact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
+import { UserService } from '../shared/services/user.service';
 import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
 import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../shared/services/common.service';
 import { leadSrcs } from '../shared/constants'
 import { SelectionModel } from '@angular/cdk/collections';
+import { FormControl } from '@angular/forms'
+import { User } from '../shared/interface/user.interface';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contacts',
@@ -33,9 +38,14 @@ export class ContactsComponent implements OnInit {
   /* Sorting */
   public sortBy: string;
   public sortValue: string;
+  /* Filter assignedTo */
+  public assignedTo = new FormControl();  // Filter assignedTo
+  public userList: User[] = [];
+  public filteredStates: Observable<any[]>;
 
   constructor(
     private contactService: ContactService,
+    private userService: UserService,
     public dialog: MatDialog,
     public activatedRoute: ActivatedRoute,
     public router: Router,
@@ -56,7 +66,21 @@ export class ContactsComponent implements OnInit {
       this.leadSrc = params['leadSrc'];
       this.sortValue = params['sortValue'];
       this.sortBy = params['sortBy'];
+      this.assignedTo.setValue(params['assignedTo']);
     })
+    this.filteredStates = this.assignedTo.valueChanges.pipe(
+      startWith(''),
+      debounceTime(400),
+      distinctUntilChanged(),
+      map(name => name ? this._filterStates(name) : this.userList.slice())
+    );
+  }
+
+  private _filterStates(value: string) {
+    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
+      this.userList = data.data.users
+    })
+    return this.userList;
   }
 
   loadData(queryParams? : IParamsContact){
@@ -141,13 +165,6 @@ export class ContactsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.loadData(this.queryParams)
     });
-  }
-
-  onFilterLeadSrc(leadSrc: string){
-    this.handleUpdateFilter({
-      leadSrc,
-      page: 0
-    })
   }
 
   onDestroyFilter(){

@@ -24,6 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
@@ -93,6 +94,7 @@ import { LoginComponent } from './login/login.component';
     MatButtonToggleModule,
     MatNativeDateModule,
     MatSortModule,
+    MatTabsModule,
 
     ChartsModule,
     FormsModule,
