@@ -5,10 +5,11 @@
     </button>
     <h1>Customer Relationship Management</h1>
     <div class="ml-auto">
-      <button *ngIf="!userName; else loggedIn" mat-raised-button (click)="onHandleSignin()">Sign in</button>
+      <button *ngIf="!userName; else loggedIn" mat-raised-button [routerLink]="['/login']">Sign in</button>
       <ng-template #loggedIn>
         <button mat-button [matMenuTriggerFor]="user">{{userName}}</button>
         <mat-menu #user="matMenu">
+          <button mat-menu-item (click)="onGetProfile()">My profile</button>
           <button mat-menu-item (click)="onChangePassword()">Change Password</button>
           <button mat-menu-item (click)="this.authService.logout()">Logout</button>
         </mat-menu>
@@ -17,7 +18,7 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav #sidenav (closed)="closeLeftSide()">
+  <mat-sidenav #sidenav>
     <mat-nav-list>
       <a mat-list-item [routerLink]="['/']">
         <mat-icon mat-list-icon>home</mat-icon> Dashboard
@@ -38,6 +39,9 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div
+      style="
+        height: calc(100vh - 50px);
+      "
     >
       <router-outlet></router-outlet>
     </div>

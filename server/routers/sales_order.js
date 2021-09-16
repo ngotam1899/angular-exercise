@@ -8,7 +8,7 @@ const jwtHelper = require('../config/jwtHelper');
 router.post('/', salesOrderController.storeSalesOrder); // store a sale order
 router.get('/', jwtHelper.verifyJwtToken, authController.verifyUser, salesOrderController.getListOfSalesOrders); // get list of sales order
 router.get('/latest', jwtHelper.verifyJwtToken, authController.verifyUser, salesOrderController.getLatestSalesOrder); // new sales orders in the last 7 days
-router.get('/revenue', salesOrderController.revenueSalesOrders); // revenue contacts
+router.get('/revenue', jwtHelper.verifyJwtToken, authController.verifyUser, salesOrderController.revenueSalesOrders); // revenue contacts
 router.get('/:id', salesOrderController.getSalesOrder); // get a sale order
 router.put('/:id', salesOrderController.updateSalesOrder); // update a sale order
 router.post('/delete', salesOrderController.deleteMultiSalesOrders); // delete multi sales orders

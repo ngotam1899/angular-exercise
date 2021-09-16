@@ -19,14 +19,21 @@ class SalesOrderController {
     // [GET] /sales_order/revenue - function to get the revenue figures of contacts
     revenueSalesOrders = async (req, res) => {
       try {
-        const pipeline = [{
-          '$group': {
-            '_id': "$status",
-            'count': { '$sum': 1 }
+        let condition = {};
+        if(!req.isAdmin) condition.assignedTo = req.username
+        const pipeline = [
+          {
+            '$match': condition
+          },
+          {
+            '$group': {
+              '_id': "$status",
+              'count': { '$sum': 1 }
+            }
           }
-        }];
+        ];
         const salesOrder = await SalesOrder.aggregate(pipeline);
-        const total = await SalesOrder.countDocuments();
+        const total = await SalesOrder.countDocuments(condition);
         return apiResponse.successResponseWithData(res, 'Success', {
           salesOrder,
           total
@@ -51,11 +58,11 @@ class SalesOrderController {
         if (req.query.status != undefined && req.query.status != '' && req.query.status != '-1') {
           condition.status = req.query.status;
         }
-        if (req.query.from != undefined && req.query.from != '' && 
+        if (req.query.from != undefined && req.query.from != '' &&
             req.query.to != undefined && req.query.to != '') {
-          condition.createdTime = { 
+          condition.createdTime = {
             $gte: req.query.from,
-            $lte: req.query.to 
+            $lte: req.query.to
           }
         }
         /* Pagination */
@@ -90,7 +97,6 @@ class SalesOrderController {
             .limit(limit)
             .skip(limit * page);
           total = await SalesOrder.countDocuments(condition);
-          console.log(salesOrder)
           if(salesOrder.length > 0)
             return apiResponse.successResponseWithData(res, 'Success', {
               salesOrder: mutipleMongooseToObject(salesOrder),
@@ -127,7 +133,6 @@ class SalesOrderController {
             });
         }
       }catch(err){
-        console.log(err);
         return apiResponse.ErrorResponse(res, err);
       }
     }
@@ -211,7 +216,7 @@ class SalesOrderController {
         const condition = {
           createdTime: { $lte: today - 7 }
         };
-        let limit = 8;
+        let limit = 5;
         let page = 0;
         let total = 0;
 
@@ -243,6 +248,7 @@ class SalesOrderController {
             limit
           });
         }
+        throw new Error("User can't access")
       }catch (err) {
         return apiResponse.ErrorResponse(res, err);
       }

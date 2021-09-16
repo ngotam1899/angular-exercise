@@ -13,4 +13,6 @@ export interface IParamsUser {
   page?: number;
   limit?: number;
   keyword?: string;
+  isAdmin?: string;
+  isActive?: string;
 }

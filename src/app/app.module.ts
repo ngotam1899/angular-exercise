@@ -40,7 +40,6 @@ import { SalesOrderComponent } from './sales-order/sales-order.component';
 import { UserComponent } from './user/user.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UserFormComponent } from './user-form/user-form.component';
-import { LoginFormComponent } from './login-form/login-form.component';
 import { AuthHeaderInterceptor } from './interceptors/header.interceptor';
 import { ContactsFormComponent } from './contacts-form/contacts-form.component';
 import { SalesOrderFormComponent } from './sales-order-form/sales-order-form.component';
@@ -59,7 +58,6 @@ import { LoginComponent } from './login/login.component';
     UserComponent,
     NotFoundComponent,
     UserFormComponent,
-    LoginFormComponent,
     ContactsFormComponent,
     SalesOrderFormComponent,
     LeadSrcPipe,
@@ -108,7 +106,6 @@ import { LoginComponent } from './login/login.component';
   ],
   entryComponents: [
     UserFormComponent,
-    LoginFormComponent,
     ContactsFormComponent,
     SalesOrderFormComponent,
     ChangePasswordComponent,

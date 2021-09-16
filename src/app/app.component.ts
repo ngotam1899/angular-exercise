@@ -1,10 +1,11 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChangePasswordComponent } from './change-password/change-password.component'
+import { UserFormComponent } from './user-form/user-form.component'
 import { MatDialog } from '@angular/material/dialog'
 import { AuthService } from './shared/services/auth.service'
 import { CommonService } from './shared/services/common.service'
-import { Router } from '@angular/router';
+import { User } from './shared/interface/user.interface';
 
 @Component({
   selector: 'app-root',
@@ -15,17 +16,18 @@ export class AppComponent implements OnInit {
   @ViewChild('sidenav', {static: true}) sidenav: MatSidenav;
   public isOpened = false;  // biến chuyển đổi hiệu ứng animate
   public userName = ""
+  public user: User;
 
   constructor(
     public dialog: MatDialog,
     public authService : AuthService,
     public commonService : CommonService,
-    public router: Router,
   ) {}
 
   ngOnInit(): void {
     this.commonService.user$.subscribe((user) => {
       this.userName = user.username;
+      this.user = user;
     });
     this.authService.getProfile().subscribe(
       (data) => {
@@ -35,24 +37,15 @@ export class AppComponent implements OnInit {
   }
 
   public openLeftSide() {
-    this.isOpened = !this.isOpened;
     this.sidenav.toggle();
   }
 
-  public closeLeftSide() {
-    this.isOpened = false;
-  }
-
-  public onHandleSignin(){
-    this.openDialogSignin()
+  public onGetProfile(){
+    this.openDialogUser(this.user)
   }
 
   public onChangePassword(){
     this.openDialogChangePassword()
-  }
-
-  openDialogSignin(): void {
-    //this.router.navigate([`/login`])
   }
 
   openDialogChangePassword(): void {
@@ -67,6 +60,26 @@ export class AppComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) this.authService.logout()
+    });
+  }
+
+  openDialogUser(user?: User): void {
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '500px',
+      data: {
+        _id: user ? user._id : null,
+        name: user ? user.name : "",
+        username: user ? user.username: "",
+        password: user ? user.password: "",
+        email: user ? user.email : "",
+        phone: user ? user.phone: "",
+        isAdmin: user ? user.isAdmin : "",
+        isActive: user ? user.isActive: ""
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) window.location.reload()
     });
   }
 }

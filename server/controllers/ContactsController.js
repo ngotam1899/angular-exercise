@@ -22,14 +22,21 @@ class ContactsController {
     // [GET] /contacts/revenue - function to get the revenue figures of contacts
     revenueContacts = async (req, res) => {
       try {
-        const pipeline = [{
-          '$group': {
-            '_id': "$leadSrc",
-            'count': { '$sum': 1 }
+        let condition = {};
+        if(!req.isAdmin) condition.assignedTo = req.username
+        const pipeline = [
+          {
+            '$match': condition
+          },
+          {
+            '$group': {
+              '_id': "$leadSrc",
+              'count': { '$sum': 1 }
+            }
           }
-        }];
+        ];
         const contacts = await Contacts.aggregate(pipeline);
-        const total = await Contacts.countDocuments();
+        const total = await Contacts.countDocuments(condition);
         return apiResponse.successResponseWithData(res, 'Success', {
           contacts,
           total
@@ -204,7 +211,7 @@ class ContactsController {
         const condition = {
           createdTime: { $lte: today - 7 }
         };
-        let limit = 8;
+        let limit = 5;
         let page = 0;
         let total = 0;
         /* Pagination */

@@ -30,12 +30,11 @@ export class AuthService {
 
   public setToken(token: string) {
     localStorage.setItem('token', token);
-    window.location.reload()
   }
 
   public removeToken() {
     localStorage.removeItem('token');
-    window.location.reload()
+    this.router.navigate(["login"])
   }
 
   public getToken() {
@@ -48,7 +47,6 @@ export class AuthService {
 
   public logout() {
     this.removeToken();
-    this.router.navigate(['/']);
     this.commonService.deleteUserName()
   }
 

@@ -115,11 +115,11 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumnsContact;"></tr>
           </table>
           <mat-paginator
-            *ngIf="total_Contact >= 8"
+            *ngIf="total_Contact >= 5"
             [length]="total_Contact"
             [pageSize]="limitContact"
             [pageIndex]="pageContact"
-            [pageSizeOptions]="[8, 12]"
+            [pageSizeOptions]="[5, 8]"
             (page)="onPageChangeContact($event)"
             >
           </mat-paginator>
@@ -161,11 +161,11 @@
               <tr mat-row class="record" *matRowDef="let row; columns: displayedColumnsSalesOrder;" (click)="onRecord(row)"></tr>
             </table>
             <mat-paginator
-              *ngIf="total_SalesOrder >= 8"
+              *ngIf="total_SalesOrder >= 5"
               [length]="total_SalesOrder"
               [pageSize]="limitSalesOrder"
               [pageIndex]="pageSalesOrder"
-              [pageSizeOptions]="[8, 12]"
+              [pageSizeOptions]="[5, 8]"
               (page)="onPageChangeSalesOrder($event)"
               >
             </mat-paginator>
@@ -245,7 +245,9 @@
     </div>
   </div>
   <div *ngIf="err" class="row text-center">
-    <img class="img-error" src="assets/image/403.svg"/>
-    <div>Đăng nhập đế tiếp tục</div>
+    <div class="col-12">
+      <img class="img-error" src="assets/image/403.svg"/><br/>
+      <button mat-button [routerLink]="['/login']">Sign in to continue </button>
+    </div>
   </div>
 </div>

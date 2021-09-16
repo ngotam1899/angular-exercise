@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { User, IParamsUser } from '../interface/user.interface';
 import { urlConstant } from '../constants/url.constant'
 
@@ -26,6 +26,8 @@ export class UserService {
         params = params.set('page', queryParams.page.toString())
         .set('limit', queryParams.limit.toString());
       }
+      if (queryParams.isAdmin) params = params.set('isAdmin', queryParams.isAdmin);
+      if (queryParams.isActive) params = params.set('isActive', queryParams.isActive);
       if (queryParams.keyword) params = params.set('keyword', queryParams.keyword);
     }
     const url = `${this.REST_API_SERVER}`;

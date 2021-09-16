@@ -16,10 +16,13 @@ export class UserComponent implements OnInit {
   public user: User;                  // User detail
   public keyword: string = '';        // Keyword to search
   public queryParams: IParamsUser;    // Query parameters
+  public queryCount: number = 0;
   public total: number;               // Total data
   public status: string;              // Status order
   public limit: number = 8;           // (Pagination) Limit data in one page
   public page: number = 0;            // (Pagination) Current page
+  public isAdmin: string = '';                 // Status order
+  public isActive: string = '';                 // Status order
 
   constructor(
     private userService: UserService,
@@ -32,9 +35,12 @@ export class UserComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.loadData(params);
       this.queryParams = params;
+      this.queryCount = Object.keys(params).length;
       this.keyword = params['keyword'];
       this.page = params['page'];
       this.limit = params['limit'];
+      this.isAdmin = params['isAdmin'] || "";
+      this.isActive = params['isActive'] || "";
     })
   }
 
@@ -97,5 +103,10 @@ export class UserComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.loadData(this.queryParams)
     });
+  }
+
+  onDestroyFilter(){
+    const pathname = location.pathname;
+    this.router.navigate([`${pathname}`])
   }
 }

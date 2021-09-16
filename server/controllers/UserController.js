@@ -52,6 +52,12 @@ class UserController {
             page = number_page;
           }
         }
+        if (req.query.isAdmin != undefined && req.query.isAdmin != '') {
+          condition.isAdmin = (req.query.isAdmin === 'true');
+        }
+        if (req.query.isActive != undefined && req.query.isActive != '') {
+          condition.isActive = (req.query.isActive === 'true');
+        }
         /* Pagination */
         const users = await User.find(condition)
         total = await User.countDocuments(condition);
@@ -81,7 +87,7 @@ class UserController {
             User
                 .findOne({ _id: userId })
                 .then((user) => {
-                    return apiResponse.successResponseWithData(res, 'Success', { user: user });
+                    return apiResponse.successResponseWithData(res, 'Success', { user });
                 });
         }catch(err){
             return apiResponse.ErrorResponse(res, err);
@@ -89,20 +95,19 @@ class UserController {
     }
 
     // [PUT] /user_management/:id - function to update a user
-    userUpdate(req, res){
-        setTimeout(() => {
-            try{
-                let userId = req.params.id;
-                let userInfo = req.body;
-                User
-                    .updateOne({ _id: userId }, userInfo)
-                    .then(() => {
-                        return apiResponse.successResponse(res, 'Update user successfully');
-                    });
-            }catch(err){
-                return apiResponse.ErrorResponse(res, err);
-            }
-        }, 1000);
+    userUpdate = async (req, res) => {
+      try{
+        let userId = req.params.id;
+        let user = await User.findById(userId);
+        let userInfo = req.body;
+        if(user){
+          await User.updateOne({ _id: userId }, userInfo)
+          return apiResponse.successResponseWithData(res, 'Update user successfully', { user });
+        }
+        else throw new Error('User not found');
+      }catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [POST] /user_management/:id - function to change user's password
@@ -110,7 +115,6 @@ class UserController {
       try{
         let userId = req.params.id;
         const {curPass, newPass} = req.body;
-        console.log(newPass)
         if(curPass === newPass) return apiResponse.ErrorResponse(res, 'Your new password is your current password');
         let user = await User.findById(userId);
         if(user.verifyPassword(curPass)){

@@ -1,13 +1,40 @@
 <div class="container">
   <h1>User management</h1>
   <div class="row">
-    <div class="col-6">
+    <div class="col-4">
       <mat-form-field class="ml-auto">
-        <input matInput placeholder="Input subject to search" [(ngModel)]="keyword" (keyup.Enter)="onSearch($event)">
+        <input matInput placeholder="Input username to search" [(ngModel)]="keyword" (keyup.Enter)="onSearch($event)">
+        <mat-icon *ngIf="!keyword" matSuffix>search</mat-icon>
+          <button *ngIf="keyword" matSuffix mat-icon-button aria-label="Clear" (click)="keyword=''">
+            <mat-icon>close</mat-icon>
+          </button>
       </mat-form-field>
     </div>
-    <div class="col-6">
-      <button mat-raised-button color="accent" class="float-right" (click)="onAdd()">Add an user</button>
+    <div class="col-2">
+      <button mat-raised-button color="accent" class="w-100 my-2" (click)="onAdd()">Add an user</button>
+    </div>
+    <div class="col-2">
+      <mat-form-field class="w-100">
+        <mat-label>Filter by roles</mat-label>
+        <mat-select [(ngModel)]="isAdmin">
+          <mat-option value="" (click)="handleUpdateFilter({isAdmin: '', page: 0})">All</mat-option>
+          <mat-option value="false" (click)="handleUpdateFilter({isAdmin: 'false', page: 0})">User</mat-option>
+          <mat-option value="true" (click)="handleUpdateFilter({isAdmin: 'true', page: 0})">Admin</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-2">
+      <mat-form-field class="w-100">
+        <mat-label>Filter by user status</mat-label>
+        <mat-select [(ngModel)]="isActive">
+          <mat-option value="" (click)="handleUpdateFilter({isActive: '', page: 0})">All</mat-option>
+          <mat-option value="false" (click)="handleUpdateFilter({isActive: 'false', page: 0})">Inactive</mat-option>
+          <mat-option value="true" (click)="handleUpdateFilter({isActive: 'true', page: 0})">Activated</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-2 my-2">
+      <button (click)="onDestroyFilter()" class="w-100" [disabled]="queryCount===0" mat-raised-button>Remove filters</button>
     </div>
   </div>
   <div *ngIf="total" class="mat-elevation-z8">

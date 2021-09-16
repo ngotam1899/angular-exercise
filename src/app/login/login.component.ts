@@ -3,6 +3,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { NotificationService } from '../shared/services/notification.service';
 import { Router } from '@angular/router';
+import { CommonService } from '../shared/services/common.service'
 
 export interface Authorization {
   username: string;
@@ -22,8 +23,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder : FormBuilder,
     public authService: AuthService,
+    private router: Router,
     private notifyService : NotificationService,
-    public router: Router,
+    public commonService : CommonService,
   ) { }
 
   ngOnInit() {
@@ -53,8 +55,13 @@ export class LoginComponent implements OnInit {
           const token = data.data.token;
           if (!!username && !!password && !!token) {
             this.authService.setToken(token);
-            this.router.navigate(["/"])
           }
+          this.authService.getProfile().subscribe(
+            (data) => {
+              this.commonService.setUser(data.data.user);
+              this.router.navigate(["/"])
+            }
+          )
         },
         (error) => {
           this.notifyService.showError( error, "Error")

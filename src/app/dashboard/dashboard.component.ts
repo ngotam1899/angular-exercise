@@ -22,7 +22,7 @@ interface IParams {
 })
 export class DashboardComponent implements OnInit {
   public admin: boolean = false;
-  public err: string = '';              // Error display
+  public err: boolean = false;              // Error display
   public leadSrc: string = "-1";        // LeadSrc filter
   public totalContact: number = 0;      // Total contact
   public revenueContact: any[] = [];
@@ -34,13 +34,13 @@ export class DashboardComponent implements OnInit {
   public displayedColumnsContact: string[] = ['index', 'contactName', 'assignedTo', 'createdTime'];
   public dataSourceContact : Contact[];
   public total_Contact: number;               // Total data
-  public limitContact: number = 8;            // (Pagination) Limit data in one page
+  public limitContact: number = 5;            // (Pagination) Limit data in one page
   public pageContact: number = 0;             // (Pagination) Current page
   /* SalesOrder table */
   public displayedColumnsSalesOrder: string[] = ['index', 'subject', 'total', 'createdTime'];
   public dataSourceSalesOrder : SalesOrder[];
   public total_SalesOrder: number;                // Total data
-  public limitSalesOrder: number = 8;             // (Pagination) Limit data in one page
+  public limitSalesOrder: number = 5;             // (Pagination) Limit data in one page
   public pageSalesOrder: number = 0;              // (Pagination) Current page
   /* Options of menu select*/
   public leadSource = leadSrcs
@@ -113,6 +113,9 @@ export class DashboardComponent implements OnInit {
       }
       this.totalContact = data.data.total;
       this.revenueContact = [...data.data.contacts, { _id: "-1", count: this.totalContact}];
+    },
+    (err) => {
+      this.err = true
     })
   }
 
@@ -129,6 +132,9 @@ export class DashboardComponent implements OnInit {
       }
       this.totalSalesOrder = data.data.total;
       this.revenueSalesOrder = [...data.data.salesOrder, { _id: "-1", count: this.totalSalesOrder}];
+    },
+    (err) => {
+      this.err = true
     })
   }
 
