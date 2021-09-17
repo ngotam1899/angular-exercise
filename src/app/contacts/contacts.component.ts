@@ -13,7 +13,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl } from '@angular/forms'
 import { User } from '../shared/interface/user.interface';
 import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contacts',
@@ -39,9 +39,8 @@ export class ContactsComponent implements OnInit {
   public sortBy: string;
   public sortValue: string;
   /* Filter assignedTo */
-  public assignedTo = new FormControl();  // Filter assignedTo
-  public userList: User[] = [];
-  public filteredStates: Observable<any[]>;
+  public assignedTo = new FormControl({ value: '', disabled: !this.admin },);  // Filter assignedTo
+  public filteredStates: User[] = [];
 
   constructor(
     private contactService: ContactService,
@@ -68,19 +67,14 @@ export class ContactsComponent implements OnInit {
       this.sortBy = params['sortBy'];
       this.assignedTo.setValue(params['assignedTo']);
     })
-    this.filteredStates = this.assignedTo.valueChanges.pipe(
+    this.assignedTo.valueChanges.pipe(
       startWith(''),
-      debounceTime(400),
+      debounceTime(800),
       distinctUntilChanged(),
-      map(name => name ? this._filterStates(name) : this.userList.slice())
-    );
-  }
-
-  private _filterStates(value: string) {
-    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
-      this.userList = data.data.users
-    })
-    return this.userList;
+      switchMap(name => this.userService.getUserList({keyword: name}))
+    ).subscribe(data => {
+      this.filteredStates = data.data.users
+    });
   }
 
   loadData(queryParams? : IParamsContact){

@@ -50,7 +50,7 @@
             formControlName="assignedTo"
             [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let state of filteredStates | async" [value]="state.username">
+            <mat-option *ngFor="let state of filteredStates" [value]="state.username">
               {{state.username}}
             </mat-option>
           </mat-autocomplete>

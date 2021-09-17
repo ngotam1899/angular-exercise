@@ -10,8 +10,8 @@ import { CommonService } from '../shared/services/common.service';
 import { Contact } from '../shared/interface/contact.interface';
 import { ContactService } from '../shared/services/contact.service';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
+import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { statuses } from '../shared/constants'
 import { NotificationService } from '../shared/services/notification.service';
 import { UserService } from '../shared/services/user.service';
@@ -26,10 +26,8 @@ export class SalesOrderFormComponent implements OnInit {
   public statuses = statuses;             // Get list status value
   public creator: string;                   // Creator is the current user
   public admin: boolean;
-  private contactList: Contact[] = []           // Get contact list
-  filteredContact: Observable<Contact[]>;  //
-  private userList: User[] = [];
-  filteredUser: Observable<User[]>;
+  filteredContact: Contact[] = [];
+  filteredUser: User[] = [];
 
   constructor(
     private formBuilder : FormBuilder,
@@ -63,28 +61,23 @@ export class SalesOrderFormComponent implements OnInit {
       this.admin = user.isAdmin;
     });
     this.createForm();
-    this.filteredUser = this.formSalesOrder.get('assignedTo').valueChanges.pipe(
+    this.formSalesOrder.get('assignedTo').valueChanges.pipe(
       startWith(''),
-      map(state => state ? this._filterUser(state) : this.userList.slice())
-    );
-    this.filteredContact = this.formSalesOrder.get('contactName').valueChanges.pipe(
+      debounceTime(800),
+      distinctUntilChanged(),
+      switchMap(state => this.userService.getUserList({keyword: state}))
+    ).subscribe(data => {
+      this.filteredUser = data.data.users
+    });
+
+    this.formSalesOrder.get('contactName').valueChanges.pipe(
       startWith(''),
-      map(state => state ? this._filterContact(state) : this.contactList.slice())
-    );
-  }
-
-  private _filterContact(value: string): Contact[] {
-    this.contactService.getContactList({keyword: value.toLowerCase()}).subscribe(data => {
-      this.contactList = data.data.contacts
-    })
-    return this.contactList;
-  }
-
-  private _filterUser(value: string): User[] {
-    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
-      this.userList = data.data.users
-    })
-    return this.userList;
+      debounceTime(800),
+      distinctUntilChanged(),
+      switchMap(state => this.contactService.getContactList({keyword: state}))
+    ).subscribe(data => {
+      this.filteredContact = data.data.contacts
+    });
   }
 
   onSubmit(data): void {

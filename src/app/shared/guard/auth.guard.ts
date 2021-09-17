@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
         this.isAdmin = data.data.user.isAdmin;
         return this.isAdmin
       }),
-      take(1)
+      //take(1)
     )
   }
 }

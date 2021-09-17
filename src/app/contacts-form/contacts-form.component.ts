@@ -9,8 +9,7 @@ import {
 import { User } from '../shared/interface/user.interface';
 import { UserService } from '../shared/services/user.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
 import { leadSrcs } from '../shared/constants'
 import { NotificationService } from '../shared/services/notification.service';
 
@@ -28,11 +27,10 @@ export interface State {
 export class ContactsFormComponent implements OnInit {
   public formContact: FormGroup;
   public leadSrcs = leadSrcs;
-  public userList: User[] = [];
   public creator: string;                   // Creator is the current user
   public admin: boolean;
   public salutations: String[] = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof."];
-  public filteredStates: Observable<any[]>;
+  public filteredStates: User[];
 
   constructor(
     private formBuilder : FormBuilder,
@@ -63,26 +61,20 @@ export class ContactsFormComponent implements OnInit {
     })
   }
 
-
-  private _filterStates(value: string) {
-    this.userService.getUserList({keyword: value.toLowerCase()}).subscribe(data => {
-      this.userList = data.data.users
-    })
-    return this.userList;
-  }
-
   ngOnInit() {
     this.commonService.user$.subscribe((user) => {
       this.creator = user.username;
       this.admin = user.isAdmin
     });
     this.createForm();
-    this.filteredStates = this.formContact.get('assignedTo').valueChanges.pipe(
+    this.formContact.get('assignedTo').valueChanges.pipe(
       startWith(''),
-      debounceTime(1000),
+      debounceTime(800),
       distinctUntilChanged(),
-      map(name => name ? this._filterStates(name) : this.userList.slice())
-    );
+      switchMap(name => this.userService.getUserList({keyword: name}))
+    ).subscribe(data => {
+      this.filteredStates = data.data.users
+    });
   }
 
   onSubmit(data): void {
