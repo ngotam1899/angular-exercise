@@ -10,13 +10,14 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 import { AccessGuard } from './shared/guard/access.guard';
 import { AuthGuard } from './shared/guard/auth.guard';
+import { IsLoggedInGuard } from './shared/guard/is-logged-in.guard';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', component: DashboardComponent, canActivate: [IsLoggedInGuard] },
   { path: 'login', component: LoginComponent, canDeactivate: [AccessGuard], },
-  { path: 'users', component: UserComponent, canActivate: [AuthGuard], },
-  { path: 'sales-order', component: SalesOrderComponent },
-  { path: 'contacts', component: ContactsComponent },
+  { path: 'users', component: UserComponent, canActivate: [AuthGuard, IsLoggedInGuard], },
+  { path: 'sales-order', component: SalesOrderComponent, canActivate: [IsLoggedInGuard] },
+  { path: 'contacts', component: ContactsComponent, canActivate: [IsLoggedInGuard] },
   { path: '**', component: NotFoundComponent },
 ];
 

@@ -209,7 +209,7 @@ class ContactsController {
       try {
         const today = new Date();
         const condition = {
-          createdTime: { $lte: today - 7 }
+          createdTime: { $gte: new Date(today - (7 * 24 * 60 * 60 * 1000)) }
         };
         let limit = 5;
         let page = 0;
@@ -236,7 +236,7 @@ class ContactsController {
 			      .skip(limit * page);
             total = await Contacts.countDocuments(condition);
           return apiResponse.successResponseWithData(res, 'Success', {
-            contacts,
+            contacts: mutipleMongooseToObject(contacts),
             total,
             page,
             limit

@@ -122,11 +122,8 @@
       <div>List is empty </div>
     </div>
   </div>
-  <div *ngIf="err" class="row text-center">
-    <div class="col-12">
-      <img class="img-error" src="assets/image/403.svg"/><br/>
-      <button mat-button [routerLink]="['/login']">Sign in to continue </button>
-    </div>
+  <div *ngIf="err">
+    <app-forbidden></app-forbidden>
   </div>
 </div>
 

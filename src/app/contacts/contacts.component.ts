@@ -39,7 +39,7 @@ export class ContactsComponent implements OnInit {
   public sortBy: string;
   public sortValue: string;
   /* Filter assignedTo */
-  public assignedTo = new FormControl({ value: '', disabled: !this.admin },);  // Filter assignedTo
+  public assignedTo = new FormControl({ value: '' },);  // Filter assignedTo
   public filteredStates: User[] = [];
 
   constructor(

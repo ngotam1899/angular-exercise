@@ -48,6 +48,7 @@ import { StatusPipe } from './shared/pipe/status.pipe';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { LoginComponent } from './login/login.component';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 @NgModule({
   declarations: [
@@ -65,11 +66,13 @@ import { LoginComponent } from './login/login.component';
     ChangePasswordComponent,
     ConfirmDeleteComponent,
     LoginComponent,
+    ForbiddenComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+
     MatSliderModule,
     MatToolbarModule,
     MatIconModule,

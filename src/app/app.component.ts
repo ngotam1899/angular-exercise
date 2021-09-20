@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { AuthService } from './shared/services/auth.service'
 import { CommonService } from './shared/services/common.service'
 import { User } from './shared/interface/user.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
     public dialog: MatDialog,
     public authService : AuthService,
     public commonService : CommonService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +34,12 @@ export class AppComponent implements OnInit {
     this.authService.getProfile().subscribe(
       (data) => {
         this.commonService.setUser(data.data.user);
+      },
+      (err) => {
+        this.snackBar.open("Your login session has expired! Please login again", "Cancel", {
+          duration: 2000,
+        });
+        this.authService.removeToken();
       }
     )
   }

@@ -2,7 +2,7 @@
   <h1>Dashboard</h1>
   <div *ngIf="!err">
     <div class="row my-2" >
-      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <div class="col-lg-3 col-sm-6 col-12 my-2">
         <mat-card>
           <mat-card-header>
             <mat-card-title>{{totalContact}}</mat-card-title>
@@ -25,7 +25,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <div class="col-lg-3 col-sm-6 col-12 my-2">
         <div class="chart">
           <canvas baseChart
             [data]="pieChartDataContacts"
@@ -39,7 +39,7 @@
           </canvas>
         </div>
       </div>
-      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <div class="col-lg-3 col-sm-6 col-12 my-2">
         <mat-card>
           <mat-card-header>
             <mat-card-title>{{totalSalesOrder}}</mat-card-title>
@@ -61,7 +61,7 @@
         </mat-card>
       </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-5 col-6 my-2">
+      <div class="col-lg-3 col-sm-6 col-12 my-2">
         <div class="chart">
           <canvas baseChart
             [data]="pieChartDataSalesOrder"
@@ -244,10 +244,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="err" class="row text-center">
-    <div class="col-12">
-      <img class="img-error" src="assets/image/403.svg"/><br/>
-      <button mat-button [routerLink]="['/login']">Sign in to continue </button>
-    </div>
+  <div *ngIf="err">
+    <app-forbidden></app-forbidden>
   </div>
 </div>

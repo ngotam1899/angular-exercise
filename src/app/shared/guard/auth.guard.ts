@@ -3,7 +3,6 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } fro
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
-import { CommonService } from '../services/common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,6 @@ export class AuthGuard implements CanActivate {
   private isAdmin: boolean = false;
 
   constructor(
-    public commonService : CommonService,
     public authService : AuthService,
   ){}
 

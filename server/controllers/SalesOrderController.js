@@ -214,7 +214,7 @@ class SalesOrderController {
       try {
         const today = new Date();
         const condition = {
-          createdTime: { $lte: today - 7 }
+          createdTime: { $gte: new Date(today - (7 * 24 * 60 * 60 * 1000)) }
         };
         let limit = 5;
         let page = 0;
