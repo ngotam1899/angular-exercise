@@ -13,7 +13,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl } from '@angular/forms'
 import { User } from '../shared/interface/user.interface';
 import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { NotificationService } from '../shared/services/notification.service';
 
 @Component({
   selector: 'app-contacts',
@@ -26,7 +27,6 @@ export class ContactsComponent implements OnInit {
   public dataSource : Contact[];
   public selection = new SelectionModel<string>(true, []);
   public contact: Contact;          // Contact detail
-  public err: string = '';          // Error display
   public keyword: string = '';      // Keyword to search
   public leadSrc: string            // Leader source
   public queryParams: IParamsContact;      // Query parameters
@@ -40,7 +40,7 @@ export class ContactsComponent implements OnInit {
   public sortValue: string;
   /* Filter assignedTo */
   public assignedTo = new FormControl({ value: '' },);  // Filter assignedTo
-  public filteredStates: User[] = [];
+  public filteredStates$: Observable<User[]>;
 
   constructor(
     private contactService: ContactService,
@@ -49,6 +49,7 @@ export class ContactsComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public commonService : CommonService,
+    private notifyService : NotificationService,
   ) { }
 
   ngOnInit() {
@@ -67,22 +68,19 @@ export class ContactsComponent implements OnInit {
       this.sortBy = params['sortBy'];
       this.assignedTo.setValue(params['assignedTo']);
     })
-    this.assignedTo.valueChanges.pipe(
+    this.filteredStates$ = this.assignedTo.valueChanges.pipe(
       startWith(''),
       debounceTime(800),
       distinctUntilChanged(),
-      switchMap(name => this.userService.getUserList({keyword: name}))
-    ).subscribe(data => {
-      this.filteredStates = data.data.users
-    });
+      switchMap(name => this.userService.getUserList({keyword: name})),
+      map(data => data.data.users)
+    );
   }
 
   loadData(queryParams? : IParamsContact){
     this.contactService.getContactList(queryParams).subscribe((data) => {
       this.dataSource = data.data.contacts;
       this.total = data.data.total;
-    }, (err) => {
-      this.err = err;
     });
   }
 
@@ -152,12 +150,24 @@ export class ContactsComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '300px',
       data: {
-        id,
-        type
+        message: type === 'CONTACT' ? 'this contact' : 'all this contacts'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.loadData(this.queryParams)
+      if(result){
+        switch (type){
+          case 'CONTACT':
+            this.contactService.deleteContact(id).subscribe((data) => {
+              this.notifyService.showSuccess("Delete contact successfully", "Success")
+              this.loadData(this.queryParams)
+            });
+          case 'CONTACT_MULTI':
+            this.contactService.deleteMultiContacts(id).subscribe((data) => {
+              this.notifyService.showSuccess("Delete multiple contacts successfully", "Success")
+              this.loadData(this.queryParams)
+            });
+        }
+      }
     });
   }
 

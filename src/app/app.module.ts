@@ -38,7 +38,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { SalesOrderComponent } from './sales-order/sales-order.component';
 import { UserComponent } from './user/user.component';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { NotFoundComponent } from './error/not-found/not-found.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { AuthHeaderInterceptor } from './interceptors/header.interceptor';
 import { ContactsFormComponent } from './contacts-form/contacts-form.component';
@@ -48,7 +48,9 @@ import { StatusPipe } from './shared/pipe/status.pipe';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { LoginComponent } from './login/login.component';
-import { ForbiddenComponent } from './forbidden/forbidden.component';
+import { ForbiddenComponent } from './error/forbidden/forbidden.component';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { EmptyComponent } from './error/empty/empty.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,7 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
     ConfirmDeleteComponent,
     LoginComponent,
     ForbiddenComponent,
+    EmptyComponent,
   ],
   imports: [
     BrowserModule,
@@ -105,7 +108,8 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
   ],
   providers: [
     ThemeService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   entryComponents: [
     UserFormComponent,

@@ -3,10 +3,6 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { ContactService } from '../shared/services/contact.service';
-import { NotificationService } from '../shared/services/notification.service';
-import { SalesOrderService } from '../shared/services/sales-order.service';
-
 
 @Component({
   selector: 'app-confirm-delete',
@@ -14,46 +10,14 @@ import { SalesOrderService } from '../shared/services/sales-order.service';
   styleUrls: ['./confirm-delete.component.scss']
 })
 export class ConfirmDeleteComponent implements OnInit {
+  public message: string;
 
   constructor(
-    private contactService: ContactService,
-    private salesOrderService: SalesOrderService,
     public dialogRef: MatDialogRef<ConfirmDeleteComponent>,
-    private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit() {
-  }
-
-  onSubmit(){
-    switch(this.data.type){
-      case "CONTACT":
-        this.contactService.deleteContact(this.data.id).subscribe((data) => {
-          this.dialogRef.close({ data });
-          this.notifyService.showSuccess("Delete contact successfully", "Success")
-        });
-        return;
-      case "CONTACT_MULTI":
-        this.contactService.deleteMultiContacts(this.data.id).subscribe((data) => {
-          this.dialogRef.close({ data });
-          this.notifyService.showSuccess("Delete multiple contacts successfully", "Success")
-        });
-        return;
-      case "SALES_ORDER":
-        this.salesOrderService.deleteSalesOrder(this.data.id).subscribe((data) => {
-          this.dialogRef.close({ data });
-          this.notifyService.showSuccess("Delete sale order successfully", "Success")
-        });
-        return;
-      case "SALES_ORDER_MULTI":
-        this.salesOrderService.deleteMultiSalesOrders(this.data.id).subscribe((data) => {
-          this.dialogRef.close({ data });
-          this.notifyService.showSuccess("Delete multiple sales order successfully", "Success")
-        });
-        return;
-      default:
-        return;
-    }
+    this.message = this.data.message;
   }
 }

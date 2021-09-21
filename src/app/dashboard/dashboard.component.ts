@@ -22,7 +22,6 @@ interface IParams {
 })
 export class DashboardComponent implements OnInit {
   public admin: boolean = false;
-  public err: boolean = false;              // Error display
   public leadSrc: string = "-1";        // LeadSrc filter
   public totalContact: number = 0;      // Total contact
   public revenueContact: any[] = [];
@@ -113,9 +112,6 @@ export class DashboardComponent implements OnInit {
       }
       this.totalContact = data.data.total;
       this.revenueContact = [...data.data.contacts, { _id: "-1", count: this.totalContact}];
-    },
-    (err) => {
-      this.err = true
     })
   }
 
@@ -132,9 +128,6 @@ export class DashboardComponent implements OnInit {
       }
       this.totalSalesOrder = data.data.total;
       this.revenueSalesOrder = [...data.data.salesOrder, { _id: "-1", count: this.totalSalesOrder}];
-    },
-    (err) => {
-      this.err = true
     })
   }
 

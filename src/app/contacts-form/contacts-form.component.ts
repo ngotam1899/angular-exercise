@@ -9,9 +9,10 @@ import {
 import { User } from '../shared/interface/user.interface';
 import { UserService } from '../shared/services/user.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, startWith, map } from 'rxjs/operators';
 import { leadSrcs } from '../shared/constants'
 import { NotificationService } from '../shared/services/notification.service';
+import { Observable } from 'rxjs';
 
 export interface State {
   flag: string;
@@ -30,7 +31,8 @@ export class ContactsFormComponent implements OnInit {
   public creator: string;                   // Creator is the current user
   public admin: boolean;
   public salutations: String[] = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof."];
-  public filteredStates: User[];
+  public userList: User[] = [];
+  public filteredStates$: Observable<User[]>;
 
   constructor(
     private formBuilder : FormBuilder,
@@ -67,14 +69,18 @@ export class ContactsFormComponent implements OnInit {
       this.admin = user.isAdmin
     });
     this.createForm();
-    this.formContact.get('assignedTo').valueChanges.pipe(
+    this.userService.getUserList().subscribe((data) => {
+      this.userList = data.data.users;
+    })
+    this.filteredStates$ = this.formContact.get('assignedTo').valueChanges.pipe(
       startWith(''),
-      debounceTime(800),
-      distinctUntilChanged(),
-      switchMap(name => this.userService.getUserList({keyword: name}))
-    ).subscribe(data => {
-      this.filteredStates = data.data.users
-    });
+      map(state => state ? this._filterStates(state) : this.userList)
+    );
+  }
+
+  _filterStates(value){
+    const filterValue = value.toLowerCase();
+    return this.userList.filter(state => state.username.toLowerCase().includes(filterValue));
   }
 
   onSubmit(data): void {

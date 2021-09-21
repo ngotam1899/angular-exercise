@@ -10,6 +10,7 @@ import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.compone
 import { CommonService } from '../shared/services/common.service';
 import { statuses } from '../shared/constants'
 import { SelectionModel } from '@angular/cdk/collections';
+import { NotificationService } from '../shared/services/notification.service';
 
 @Component({
   selector: 'app-sales-order',
@@ -21,7 +22,6 @@ export class SalesOrderComponent implements OnInit {
   public displayedColumns: string[] = ['checkbox', 'index', 'subject', 'contactName', 'status', 'total', 'actions'];
   public dataSource : SalesOrder[];
   public selection = new SelectionModel<string>(true, []);
-  public err: string = '';               // Error display
   public saleOrder: SalesOrder;          // Sale Order detail
   public keyword: string = '';           // Keyword to search
   public queryParams: IParamsSalesOrder; // Query parameters
@@ -44,6 +44,7 @@ export class SalesOrderComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public commonService : CommonService,
+    private notifyService : NotificationService,
   ) { }
 
   ngOnInit() {
@@ -69,8 +70,6 @@ export class SalesOrderComponent implements OnInit {
     this.salesOrderService.getSalesOrderList(queryParams).subscribe((data) => {
       this.dataSource = data.data.salesOrder;
       this.total = data.data.total;
-    }, (err) => {
-      this.err = err;
     });
   }
 
@@ -136,12 +135,24 @@ export class SalesOrderComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '300px',
       data: {
-        id,
-        type
+        message: type === 'SALES_ORDER' ? 'this sales order' : 'all this sales orders'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.loadData(this.queryParams)
+      if(result){
+        switch (type){
+          case 'SALES_ORDER':
+            this.salesOrderService.deleteSalesOrder(id).subscribe((data) => {
+              this.notifyService.showSuccess("Delete sale order successfully", "Success")
+              this.loadData(this.queryParams)
+            });
+          case 'SALES_ORDER_MULTI':
+            this.salesOrderService.deleteMultiSalesOrders(id).subscribe((data) => {
+              this.notifyService.showSuccess("Delete multiple sales order successfully", "Success")
+              this.loadData(this.queryParams)
+            });
+        }
+      }
     });
   }
 
