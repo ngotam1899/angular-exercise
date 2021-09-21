@@ -1,20 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { SalesOrder } from '../shared/interface/sales-order.interface';
-import { SalesOrderService } from '../shared/services/sales-order.service';
+import { SalesOrder } from '../../../shared/interface/sales-order.interface';
+import { SalesOrderService } from '../../../shared/services/sales-order.service';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { User } from '../shared/interface/user.interface';
-import { CommonService } from '../shared/services/common.service';
-import { Contact } from '../shared/interface/contact.interface';
-import { ContactService } from '../shared/services/contact.service';
+import { User } from '../../../shared/interface/user.interface';
+import { CommonService } from '../../../shared/services/common.service';
+import { Contact } from '../../../shared/interface/contact.interface';
+import { ContactService } from '../../../shared/services/contact.service';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { statuses } from '../shared/constants'
-import { NotificationService } from '../shared/services/notification.service';
-import { UserService } from '../shared/services/user.service';
+import { statuses } from '../../../shared/constants'
+import { NotificationService } from '../../../shared/services/notification.service';
+import { UserService } from '../../../shared/services/user.service';
 
 @Component({
   selector: 'app-sales-order-form',

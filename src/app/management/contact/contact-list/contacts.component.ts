@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
-import { Contact, IParamsContact } from '../shared/interface/contact.interface';
-import { ContactService } from '../shared/services/contact.service';
-import { UserService } from '../shared/services/user.service';
+import { Contact, IParamsContact } from '../../../shared/interface/contact.interface';
+import { ContactService } from '../../../shared/services/contact.service';
+import { UserService } from '../../../shared/services/user.service';
 import { ContactsFormComponent } from '../contacts-form/contacts-form.component'
-import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
+import { ConfirmDeleteComponent } from '../../../confirm-delete/confirm-delete.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonService } from '../shared/services/common.service';
-import { leadSrcs } from '../shared/constants'
+import { CommonService } from '../../../shared/services/common.service';
+import { leadSrcs } from '../../../shared/constants'
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl } from '@angular/forms'
-import { User } from '../shared/interface/user.interface';
+import { User } from '../../../shared/interface/user.interface';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
-import { NotificationService } from '../shared/services/notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-contacts',

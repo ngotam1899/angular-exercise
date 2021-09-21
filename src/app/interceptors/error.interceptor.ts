@@ -20,10 +20,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   convertError(err: ResponseErrorData) {
     if (err.status === 403) {
-      this.router.navigate(['/403']);
+      this.router.navigate(['/management/403']);
       //this.router.navigate(['/login']);
     } else if (err.status === 500) {
-      this.router.navigate(['/403']);
+      this.router.navigate(['/management/403']);
       //this.router.navigate(['/login']);
     } else {
       console.error(err)

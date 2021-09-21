@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
-import { SalesOrder, IParamsSalesOrder } from '../shared/interface/sales-order.interface';
-import { SalesOrderService } from '../shared/services/sales-order.service';
+import { SalesOrder, IParamsSalesOrder } from '../../../shared/interface/sales-order.interface';
+import { SalesOrderService } from '../../../shared/services/sales-order.service';
 import { SalesOrderFormComponent } from '../sales-order-form/sales-order-form.component'
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
-import { CommonService } from '../shared/services/common.service';
-import { statuses } from '../shared/constants'
+import { ConfirmDeleteComponent } from '../../../confirm-delete/confirm-delete.component';
+import { CommonService } from '../../../shared/services/common.service';
+import { statuses } from '../../../shared/constants'
 import { SelectionModel } from '@angular/cdk/collections';
-import { NotificationService } from '../shared/services/notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-sales-order',

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Contact } from '../shared/interface/contact.interface';
-import { SalesOrder } from '../shared/interface/sales-order.interface';
-import { User } from '../shared/interface/user.interface';
-import { ContactService } from '../shared/services/contact.service';
-import { SalesOrderService } from '../shared/services/sales-order.service';
-import { CommonService } from '../shared/services/common.service';
-import { statuses, leadSrcs } from '../shared/constants'
+import { Contact } from '../../shared/interface/contact.interface';
+import { SalesOrder } from '../../shared/interface/sales-order.interface';
+import { User } from '../../shared/interface/user.interface';
+import { ContactService } from '../../shared/services/contact.service';
+import { SalesOrderService } from '../../shared/services/sales-order.service';
+import { CommonService } from '../../shared/services/common.service';
+import { statuses, leadSrcs } from '../../shared/constants'
 import { ChartType, ChartOptions } from 'chart.js';
 import { Label } from 'ng2-charts';
 
@@ -85,12 +85,14 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.commonService.user$.subscribe((user) => {
       this.admin = user.isAdmin;
+      if(this.admin){
+        this.loadLatestContact(this.queryParams);
+        this.loadLatestSalesOrder(this.queryParams);
+      }
     });
     this.loadRevenueContact();
     this.loadRevenueSalesOrder();
     this.activatedRoute.queryParams.subscribe(params => {
-      this.loadLatestContact(params);
-      this.loadLatestSalesOrder(params);
       this.queryParams = params;
       this.limitContact = params['limitContact'];
       this.pageContact = params['pageContact'];
@@ -156,9 +158,9 @@ export class DashboardComponent implements OnInit {
 
   onRedirect = (url : string, assignedTo? : string) => {
     if(assignedTo){
-      this.router.navigate([`${url}`], { queryParams : { assignedTo } })
+      this.router.navigate([`/management/${url}`], { queryParams : { assignedTo } })
     }
-    else this.router.navigate([`${url}`], { queryParams : this.queryParams })
+    else this.router.navigate([`/management/${url}`], { queryParams : this.queryParams })
   }
 
   onPageChangeContact(event) {

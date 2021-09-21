@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../shared/services/user.service';
-import { User, IParamsUser } from '../shared/interface/user.interface';
+import { UserService } from '../../../shared/services/user.service';
+import { User, IParamsUser } from '../../../shared/interface/user.interface';
 import { UserFormComponent } from '../user-form/user-form.component'
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';

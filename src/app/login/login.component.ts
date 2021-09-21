@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
           this.authService.getProfile().subscribe(
             (data) => {
               this.commonService.setUser(data.data.user);
-              this.router.navigate(["/"])
+              this.router.navigate(["/management"])
             }
           )
         },

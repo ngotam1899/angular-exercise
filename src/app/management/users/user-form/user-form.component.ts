@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { User } from '../shared/interface/user.interface';
-import { UserService } from '../shared/services/user.service';
+import { User } from '../../../shared/interface/user.interface';
+import { UserService } from '../../../shared/services/user.service';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { NotificationService } from '../shared/services/notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-user-form',
