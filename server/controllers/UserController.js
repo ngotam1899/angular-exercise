@@ -1,7 +1,8 @@
 const User = require('../models/User');
 const  { mutipleMongooseToObject } = require('../helpers/mongoose');
 const apiResponse = require('../helpers/apiResponse');
-
+const { upload } = require('../config/uploadImage')
+const { isValidFile } = require('../helpers/validators')
 /*
 UserController contains function handlers to handle request from User management page.
 It will recieve the data from client, send to its model and vice versa.
@@ -127,6 +128,21 @@ class UserController {
         return apiResponse.ErrorResponse(res, err);
       }
     }
+
+    // [POST] /user_management/avatar - upload user's avatar
+    uploadImage = async (req, res, next) => {
+      try {
+        var image;
+        /* 2. In case upload a image (.png .jpeg .jpg) */
+        const file = req.body.image;
+        if (file) {
+          image = await upload(file);
+        }
+        return apiResponse.successResponseWithData(res, 'Success', { image });
+      } catch (error) {
+        next(error);
+      }
+    };
 }
 
 module.exports = new UserController();

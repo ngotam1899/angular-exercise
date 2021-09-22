@@ -15,7 +15,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 })
 export class UserFormComponent implements OnInit {
   public formUser: FormGroup
-
+  public files: File[] = [];
   constructor(
     private formBuilder : FormBuilder,
     public userService: UserService,
@@ -48,6 +48,22 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit(data: User): void {
+    if (!this.files[0]) {
+      this.handleSubmit(data)
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(this.files[0]);
+    //Upload my image to cloudinary
+    reader.onloadend = () => {
+      this.userService.uploadAvatar(reader.result).subscribe((response) => {
+        data.image = response.data.image;
+        console.log(data);
+        this.handleSubmit(data)
+      });
+    }
+  }
+
+  handleSubmit(data: User){
     if(this.data._id){
       this.userService
       .updateUser(this.data._id, data)
@@ -75,4 +91,19 @@ export class UserFormComponent implements OnInit {
       );
     }
   }
+
+  /* Upload avatar */
+  onSelect(event) {
+    console.log(event);
+    if(this.files && this.files.length >=2) {
+      this.onRemove(this.files[0]);
+    }
+    if (event.addedFiles) this.files.push( ...event.addedFiles);
+  }
+
+  onRemove(event) {
+    console.log(event);
+    this.files.splice(this.files.indexOf(event), 1);
+  }
+
 }

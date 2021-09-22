@@ -2,6 +2,8 @@ import { ForbiddenComponent } from '../error/forbidden/forbidden.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementRoutingModule } from './management.routing';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+
 import { ManagementComponent } from './management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from '../shared/shared.module';
@@ -22,6 +24,7 @@ import { UserFormComponent } from '../management/users/user-form/user-form.compo
     UserFormComponent,
   ],
   imports: [
+    NgxDropzoneModule,
     CommonModule,
     ManagementRoutingModule,
     SharedModule,

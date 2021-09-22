@@ -96,7 +96,8 @@ export class UserComponent implements OnInit {
         email: user ? user.email : "",
         phone: user ? user.phone: "",
         isAdmin: user ? user.isAdmin : "",
-        isActive: user ? user.isActive: ""
+        isActive: user ? user.isActive: "",
+        image: user ? user.image: ""
       }
     });
 

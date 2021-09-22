@@ -20,8 +20,14 @@ export class AuthHeaderInterceptor implements HttpInterceptor {
     const token = this.authService.getToken();
     if (token) {
       let myHeaders = headers.set('Authorization', 'Bearer ' + token);
-      const AuthRequest = req.clone({ headers: myHeaders });
-      return next.handle(AuthRequest);
+      req = req.clone({ headers: myHeaders });
+/*       if (req.body && req.body.image && req.body.image instanceof FormData)
+      {
+        req = req.clone({ headers: req.headers.delete('Content-Type','application/json') })
+        req = req.clone({ headers: req.headers.set('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundaryRvvDMUPl5fHcBQos')})
+        req.headers.get('Accept')
+      } */
+      return next.handle(req);
     }
     return next.handle(req);
   }

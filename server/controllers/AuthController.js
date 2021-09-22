@@ -30,7 +30,7 @@ class AuthController {
                 .findOne({ _id: userId })
                 .then((data) => {
                     // remove password before sent user info to client
-                    let userInfo = _.pick(data, ['_id', 'name','username', 'email', 'phone', 'isAdmin', 'isActive', 'createdTime']);
+                    let userInfo = _.pick(data, ['_id', 'name','username', 'email', 'phone', 'isAdmin', 'isActive', 'createdTime', 'image']);
                     return apiResponse.successResponseWithData(res, 'Success', {user: userInfo});
                 });
         } catch(err){

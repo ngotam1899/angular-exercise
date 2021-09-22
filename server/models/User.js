@@ -14,6 +14,7 @@ const User = new Schema({
     isAdmin: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     createdTime: { type: Date, default: new Date() },
+    image: { type: String },
 });
 
 // Methods

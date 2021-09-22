@@ -7,6 +7,7 @@ export interface User {
   phone: string;
   isAdmin?: boolean;
   isActive?: boolean;
+  image?: string;
 }
 
 export interface IParamsUser {

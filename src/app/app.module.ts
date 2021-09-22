@@ -14,6 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { SharedModule } from './shared/shared.module';
 import { ManagementModule } from './management/management.module';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ManagementModule } from './management/management.module';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    NgxDropzoneModule,
     SharedModule,
     ManagementModule,
     FormsModule,

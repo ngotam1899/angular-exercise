@@ -1,31 +1,45 @@
-<form [formGroup]="formUser" (ngSubmit)="onSubmit(formUser.value)">
+<form [formGroup]="formUser" (ngSubmit)="onSubmit(formUser.value)" >
   <div mat-dialog-content>
     <h3>{{data._id ? 'Edit user' : 'Add new user'}}</h3>
-    <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input formControlName="name" matInput />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Username</mat-label>
-      <input formControlName="username" matInput />
-    </mat-form-field>
-      <mat-form-field>
-      <mat-label>Password</mat-label>
-      <input type="password" formControlName="password" matInput/>
-    </mat-form-field>
-  <mat-form-field>
-      <mat-label>Email</mat-label>
-      <input type="email" formControlName="email" matInput />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Phone</mat-label>
-      <input formControlName="phone" matInput  />
-    </mat-form-field>
     <div class="row">
+      <div class="col-12 text-center">
+        <img src="{{data.image}}" class="avatar">
+        <ngx-dropzone *ngIf="!data.image" (change)="onSelect($event)">
+          <ngx-dropzone-label>Drop it, baby!</ngx-dropzone-label>
+          <ngx-dropzone-image-preview
+            ngProjectAs="ngx-dropzone-preview"
+            *ngFor="let f of files"
+            [file]="f"
+            [removable]="true"
+            (removed)="onRemove(f)"
+          >
+          </ngx-dropzone-image-preview>
+        </ngx-dropzone>
+      </div>
       <div class="col-6">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input formControlName="name" matInput />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Username</mat-label>
+          <input formControlName="username" matInput />
+        </mat-form-field>
+          <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password" formControlName="password" matInput/>
+        </mat-form-field>
         <mat-checkbox formControlName="isAdmin" >Is admin</mat-checkbox>
       </div>
       <div class="col-6">
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input type="email" formControlName="email" matInput />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Phone</mat-label>
+          <input formControlName="phone" matInput  />
+        </mat-form-field>
         <mat-checkbox formControlName="isActive" >Is active</mat-checkbox>
       </div>
     </div>

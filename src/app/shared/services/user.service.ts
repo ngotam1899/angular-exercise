@@ -43,6 +43,14 @@ export class UserService {
       .pipe(catchError(this.handleError));
   }
 
+  public uploadAvatar(file: any) {
+    const url = `${this.REST_API_SERVER}/avatar`;
+    return this.httpClient
+      .post<any>(url, {image: file})
+      .pipe(catchError(this.handleError));
+  }
+
+
   public addUser(data: User) {
     const url = `${this.REST_API_SERVER}`;
     return this.httpClient
@@ -63,6 +71,7 @@ export class UserService {
       .post<any>(url, data)
       .pipe(catchError(this.handleError));
   }
+
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';
