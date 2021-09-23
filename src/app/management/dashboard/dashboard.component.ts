@@ -9,6 +9,7 @@ import { CommonService } from '../../shared/services/common.service';
 import { statuses, leadSrcs } from '../../shared/constants'
 import { ChartType, ChartOptions } from 'chart.js';
 import { Label } from 'ng2-charts';
+import { NO_AVATAR } from '../../shared/constants/index'
 
 interface IParams {
   leadSrc?: string;
@@ -21,6 +22,7 @@ interface IParams {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  public NO_AVATAR = NO_AVATAR;
   public admin: boolean = false;
   public leadSrc: string = "-1";        // LeadSrc filter
   public totalContact: number = 0;      // Total contact

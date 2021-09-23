@@ -39,7 +39,7 @@ export class ContactsComponent implements OnInit {
   public sortBy: string;
   public sortValue: string;
   /* Filter assignedTo */
-  public assignedTo = new FormControl({ value: '' },);  // Filter assignedTo
+  public assignedTo = new FormControl('');  // Filter assignedTo
   public filteredStates$: Observable<User[]>;
 
   constructor(
@@ -66,7 +66,10 @@ export class ContactsComponent implements OnInit {
       this.leadSrc = params['leadSrc'];
       this.sortValue = params['sortValue'];
       this.sortBy = params['sortBy'];
-      this.assignedTo.setValue(params['assignedTo']);
+      this.userService.getUserDetail(params['assignedTo']).subscribe(data => {
+        this.assignedTo.setValue(data.data.user.username);
+      })
+      
     })
     this.filteredStates$ = this.assignedTo.valueChanges.pipe(
       startWith(''),
@@ -173,6 +176,7 @@ export class ContactsComponent implements OnInit {
 
   onDestroyFilter(){
     const pathname = location.pathname;
+    this.assignedTo.setValue('');
     this.router.navigate([`${pathname}`])
   }
 

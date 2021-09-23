@@ -41,10 +41,11 @@ export class ContactsFormComponent implements OnInit {
     public commonService : CommonService,
     private notifyService : NotificationService,
     public dialogRef: MatDialogRef<ContactsFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Contact
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   createForm(){
+    console.log(this.data.assignedTo)
     this.formContact = this.formBuilder.group({
       contactName: [this.data.contactName, [ Validators.required ]],
       salutation: [this.data.salutation],
@@ -53,7 +54,7 @@ export class ContactsFormComponent implements OnInit {
       organization: [this.data.organization],
       dob: [this.data.dob],
       leadSrc: [this.data.leadSrc, [ Validators.required ]],
-      assignedTo: [this.data.assignedTo, [ Validators.required ]],
+      assignedTo: [this.data.assignedTo.username, [ Validators.required ]],
       creator: [{
         value: this.data.creator || this.creator,
         disabled: true

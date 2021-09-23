@@ -16,6 +16,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class UserFormComponent implements OnInit {
   public formUser: FormGroup
   public files: File[] = [];
+  public isEditAvatar = true;
+
   constructor(
     private formBuilder : FormBuilder,
     public userService: UserService,
@@ -26,6 +28,9 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm()
+    if(this.data.image){
+      this.isEditAvatar = false;
+    }
   }
 
   createForm(){
@@ -106,4 +111,7 @@ export class UserFormComponent implements OnInit {
     this.files.splice(this.files.indexOf(event), 1);
   }
 
+  onChangeAvatar(){
+    this.isEditAvatar = true;
+  }
 }

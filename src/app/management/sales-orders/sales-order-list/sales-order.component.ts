@@ -88,6 +88,10 @@ export class SalesOrderComponent implements OnInit {
     this.openConfirm("SALES_ORDER", salesOrderId);
   }
 
+  onView(salesOrderId: string){
+    console.log(salesOrderId)
+  }
+
   onSearch(event){
     this.handleUpdateFilter({
       keyword: event.target.value,

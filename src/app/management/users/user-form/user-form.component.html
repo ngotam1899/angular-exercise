@@ -1,11 +1,20 @@
+
 <form [formGroup]="formUser" (ngSubmit)="onSubmit(formUser.value)" >
   <div mat-dialog-content>
-    <h3>{{data._id ? 'Edit user' : 'Add new user'}}</h3>
+    <h3 class="my-0">{{data._id ? 'Edit user' : 'Add new user'}}</h3>
     <div class="row">
       <div class="col-12 text-center">
-        <img src="{{data.image}}" class="avatar">
-        <ngx-dropzone *ngIf="!data.image" (change)="onSelect($event)">
-          <ngx-dropzone-label>Drop it, baby!</ngx-dropzone-label>
+        <div *ngIf="!isEditAvatar" class="avatar shadow">
+          <img src="{{data.image}}">
+          <div class="file">
+            <button type="button" mat-button (click)="isEditAvatar = true;">Change avatar</button>
+          </div>
+        </div>
+        <ngx-dropzone *ngIf="isEditAvatar" (change)="onSelect($event)">
+          <ngx-dropzone-label >
+            <button *ngIf="data.image" type="button" (click)="isEditAvatar = false;" mat-button mat-raised-button color="warn">Cancel</button>
+            <button *ngIf="!data.image" type="button" mat-button mat-raised-button color="warn">Choose avatar</button>
+          </ngx-dropzone-label>
           <ngx-dropzone-image-preview
             ngProjectAs="ngx-dropzone-preview"
             *ngFor="let f of files"

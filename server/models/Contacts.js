@@ -11,7 +11,7 @@ const Contacts = new Schema({
     dob: { type: String, required: false },
     leadSrc: { type: String, required: true },
     // (0) Existing Customer, (1) Partner, (2) Conference, (3) Website, (4) Word of mouth, (5) Other
-    assignedTo: { type: String, ref: 'User', required: true },
+    assignedTo: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     creator: { type: String, default: 'admin' },
     address: { type: String, required: false },
     description: { type: String, required: false },

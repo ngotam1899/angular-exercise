@@ -9,6 +9,8 @@ export const leadSrcs = [
   { value: "5", viewValue: "Other" },
 ]
 
+export const NO_AVATAR = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaKG-OjwS8xcdjgqbB67aJ8iP-1UEO3cvGc_5UFhp-DzklYFCtaLixII0XUkjXEsIJuP0&usqp=CAU"
+
 // (0) Created, (1) Approved, (2) Delivered, (3) Cancelled
 export const  statuses = [
   { value: "-1", viewValue: "All sales" },

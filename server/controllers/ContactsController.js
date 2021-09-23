@@ -133,17 +133,16 @@ class ContactsController {
     }
 
     // [GET] /contacts/:id - function to get a contact information by contact ID
-    getContact(req, res){
+    getContact = async (req, res) => {
+      try {
         let contactId = req.params.id;
-        try{
-            Contacts
-                .findOne({ _id: contactId })
-                .then((contact) => {
-                    return apiResponse.successResponseWithData(res, 'Success', { contact: contact });
-                });
-        }catch(err){
-            return apiResponse.ErrorResponse(res, err);
-        }
+        const contact = await Contacts
+        .findOne({ _id: contactId })
+        .populate({ path: 'assignedTo', select: ['username', 'image'] })
+        return apiResponse.successResponseWithData(res, 'Success', { contact });
+      }catch(err){
+        return apiResponse.ErrorResponse(res, err);
+      }
     }
 
     // [PUT] /contacts/:id - function to update a contact information by contact ID
@@ -233,7 +232,8 @@ class ContactsController {
           let contacts = await Contacts
             .find(condition)
             .limit(limit)
-			      .skip(limit * page);
+			      .skip(limit * page)
+            .populate({ path: 'assignedTo', select: ['username', 'image'] })
             total = await Contacts.countDocuments(condition);
           return apiResponse.successResponseWithData(res, 'Success', {
             contacts: mutipleMongooseToObject(contacts),

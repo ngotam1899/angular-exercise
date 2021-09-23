@@ -1,6 +1,6 @@
 <form [formGroup]="formContact" (ngSubmit)="onSubmit(formContact.value)">
   <div mat-dialog-content>
-    <h3>{{data._id ? (admin ? 'Edit contact' : 'Detail contact') : 'Add new contact'}}</h3>
+    <h3 class="my-0">{{data._id ? (admin ? 'Edit contact' : 'Detail contact') : 'Add new contact'}}</h3>
     <div class="row">
       <div class="col-6">
         <mat-form-field>
@@ -50,7 +50,7 @@
             formControlName="assignedTo"
             [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let state of filteredStates$ | async" [value]="state.username">
+            <mat-option *ngFor="let state of filteredStates$ | async" [value]="state._id">
               {{state.username}}
             </mat-option>
           </mat-autocomplete>

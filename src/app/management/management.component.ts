@@ -7,6 +7,7 @@ import { AuthService } from '../shared/services/auth.service'
 import { CommonService } from '../shared/services/common.service'
 import { User } from '../shared/interface/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NO_AVATAR } from '../shared/constants/index'
 
 @Component({
   selector: 'app-management',
@@ -14,11 +15,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./management.component.scss']
 })
 export class ManagementComponent implements OnInit {
-
   @ViewChild('sidenav', {static: true}) sidenav: MatSidenav;
   public isOpened = false;  // biến chuyển đổi hiệu ứng animate
   public userName = ""
+  public image = ""
   public user: User;
+  public NOAVATAR = NO_AVATAR
 
   constructor(
     public dialog: MatDialog,
@@ -30,6 +32,7 @@ export class ManagementComponent implements OnInit {
   ngOnInit(): void {
     this.commonService.user$.subscribe((user) => {
       this.userName = user.username;
+      this.image = user.image;
       this.user = user;
     });
     this.authService.getProfile().subscribe(

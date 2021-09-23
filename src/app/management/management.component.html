@@ -7,7 +7,12 @@
     <div class="ml-auto">
       <button *ngIf="!userName; else loggedIn" mat-raised-button [routerLink]="['/login']">Sign in</button>
       <ng-template #loggedIn>
-        <button mat-button [matMenuTriggerFor]="user">{{userName}}</button>
+        <button mat-button [matMenuTriggerFor]="user">
+          <img class="icon-avatar" [src]="image ? image : NOAVATAR">
+          <span>
+            {{userName}}
+          </span>
+        </button>
         <mat-menu #user="matMenu">
           <button mat-menu-item (click)="onGetProfile()">My profile</button>
           <button mat-menu-item (click)="onChangePassword()">Change Password</button>

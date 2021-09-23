@@ -6,11 +6,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { salesOrderRoutes } from './sales-order.routing';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SalesOrderDetailComponent } from './sales-order-detail/sales-order-detail.component';
 
 @NgModule({
   declarations: [
     SalesOrderFormComponent,
     SalesOrderComponent,
+    SalesOrderDetailComponent,
   ],
   imports: [
     CommonModule,

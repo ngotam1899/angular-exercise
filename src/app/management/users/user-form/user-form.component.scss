@@ -4,6 +4,37 @@ mat-form-field {
 ngx-dropzone-image-preview {
   margin: 0 auto!important;
 }
+ngx-dropzone{
+  height: 150px;
+  margin: 15px 0;
+}
+
 .avatar{
-  height:180px
+  text-align: center;
+  margin: 15px auto;
+  height: 150px;
+  width: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.avatar img{
+  height: 100%;
+  width: auto;
+}
+.avatar .file {
+  position: relative;
+  overflow: hidden;
+  margin-top: -50%;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  font-size: 1vw;
+  background: rgba(33,37,41,.7215686274509804);
+}
+.avatar .file button {
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  color: white;
 }
