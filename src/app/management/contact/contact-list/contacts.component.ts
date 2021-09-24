@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { Contact, IParamsContact } from '../../../shared/interface/contact.interface';
@@ -12,8 +12,8 @@ import { leadSrcs } from '../../../shared/constants'
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormControl } from '@angular/forms'
 import { User } from '../../../shared/interface/user.interface';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
@@ -21,7 +21,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.scss']
 })
-export class ContactsComponent implements OnInit {
+export class ContactsComponent implements OnInit, OnDestroy {
   public leadSrcs = leadSrcs;
   public displayedColumns: string[] = ['checkbox', 'index', 'salutation', 'contactName', 'mobilePhone', 'leadSrc', 'actions'];
   public dataSource : Contact[];
@@ -41,6 +41,10 @@ export class ContactsComponent implements OnInit {
   /* Filter assignedTo */
   public assignedTo = new FormControl('');  // Filter assignedTo
   public filteredStates$: Observable<User[]>;
+  private readonly loading = new Subject<boolean>();
+  get loading$(): Observable<boolean> {
+    return this.loading;
+  }
 
   constructor(
     private contactService: ContactService,
@@ -73,10 +77,12 @@ export class ContactsComponent implements OnInit {
     })
     this.filteredStates$ = this.assignedTo.valueChanges.pipe(
       startWith(''),
-      debounceTime(800),
+      tap(() => this.loading.next(true)),
+      debounceTime(1000),
       distinctUntilChanged(),
       switchMap(name => this.userService.getUserList({keyword: name})),
-      map(data => data.data.users)
+      map(data => data.data.users),
+      tap(() => this.loading.next(false)),
     );
   }
 
@@ -204,5 +210,9 @@ export class ContactsComponent implements OnInit {
 
   onDeleteAll(){
     this.openConfirm("CONTACT_MULTI", this.selection.selected);
+  }
+
+  ngOnDestroy() {
+    this.loading.unsubscribe();
   }
 }

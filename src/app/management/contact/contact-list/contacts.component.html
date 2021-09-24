@@ -26,7 +26,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col-md-2 col-4">
+      <div class="col-md-2 col-4" *ngIf="{results: filteredStates$ | async, loading: loading$ | async} as obs">
         <mat-form-field >
           <mat-label>Filter by Assigned to</mat-label>
           <input matInput
@@ -34,9 +34,14 @@
             [formControl]="assignedTo"
             [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let state of filteredStates$ | async" [value]="state._id" (click)="handleUpdateFilter({assignedTo: this.assignedTo.value, page: 0})">
-              {{state.username}}
+            <mat-option disabled class="text-center" *ngIf="obs.loading">
+              <mat-spinner diameter="35"></mat-spinner>
             </mat-option>
+            <ng-container *ngIf="!obs.loading">
+              <mat-option *ngFor="let state of obs.results" [value]="state._id" (click)="handleUpdateFilter({assignedTo: this.assignedTo.value, page: 0})">
+                {{state.username}}
+              </mat-option>
+            </ng-container>
           </mat-autocomplete>
         </mat-form-field>
       </div>

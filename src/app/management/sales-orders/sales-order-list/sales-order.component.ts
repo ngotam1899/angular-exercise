@@ -89,7 +89,7 @@ export class SalesOrderComponent implements OnInit {
   }
 
   onView(salesOrderId: string){
-    console.log(salesOrderId)
+    this.router.navigate([`${location.pathname}/${salesOrderId}`])
   }
 
   onSearch(event){

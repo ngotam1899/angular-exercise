@@ -25,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LeadSrcPipe } from './pipe/lead-src.pipe';
 import { StatusPipe } from './pipe/status.pipe';
 import { EmptyComponent } from '../error/empty/empty.component';
@@ -62,7 +63,7 @@ import { EmptyComponent } from '../error/empty/empty.component';
     MatNativeDateModule,
     MatSortModule,
     MatTabsModule,
-
+    MatProgressSpinnerModule,
     LeadSrcPipe,
     StatusPipe,
   ],
