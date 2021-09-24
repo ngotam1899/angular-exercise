@@ -15,6 +15,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { statuses } from '../../../shared/constants'
 import { NotificationService } from '../../../shared/services/notification.service';
 import { UserService } from '../../../shared/services/user.service';
+import { UploadFile  } from 'ng-zorro-antd/upload';
+import { UploadXHRArgs } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-sales-order-form',
@@ -28,6 +30,18 @@ export class SalesOrderFormComponent implements OnInit {
   public admin: boolean;
   filteredContact: Contact[] = [];
   filteredUser: User[] = [];
+  public uploadImages = [];
+
+  /* Upload multiple image use Ant Design */
+  showUploadList = {
+    showPreviewIcon: true,
+    showRemoveIcon: true,
+    hidePreviewIconInNonImage: true
+  };
+  fileList: any[];
+  previewImage: string | undefined = '';
+  previewVisible = false;
+  /* Upload multiple image use Ant Design */
 
   constructor(
     private formBuilder : FormBuilder,
@@ -39,6 +53,34 @@ export class SalesOrderFormComponent implements OnInit {
     private notifyService : NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: SalesOrder
   ) { }
+
+  /* Upload multiple image use Ant Design */
+  handlePreview = (file: UploadFile) => {
+    this.previewImage = file.url;
+    this.previewVisible = true;
+  };
+  onUpload(){
+    this.uploadImages = [];
+    this.fileList.map(item => {
+      if(item.response && item.status !== "removed"){
+        this.uploadImages.push({url: item.response.image})
+      } else if(item.url && item.status !== "removed"){
+        this.uploadImages.push({url: item.url})
+      }
+    })
+  }
+
+  customUploadReq = (item) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(item.file);
+    reader.onloadend = () => {
+      this.userService.uploadAvatar(reader.result).subscribe(res => {
+        item.onSuccess(res.data, item.file, res);
+      })
+    }
+  }
+  
+  /* Upload multiple image use Ant Design */
 
   createForm(){
     this.formSalesOrder = this.formBuilder.group({
@@ -53,6 +95,14 @@ export class SalesOrderFormComponent implements OnInit {
       }],
       description: [this.data.description],
     })
+    /* Covert _id to uid */
+    this.fileList = this.data.images.map(({
+      _id: uid,
+      ...rest
+    }) => ({
+      uid,
+      ...rest
+    }));
   }
 
   ngOnInit() {
@@ -81,6 +131,7 @@ export class SalesOrderFormComponent implements OnInit {
   }
 
   onSubmit(data): void {
+    data.images = this.uploadImages.length > 0 ? this.uploadImages : this.fileList;
     if(this.data._id){
       this.salesOrderService
       .updateSalesOrder(this.data._id, data)

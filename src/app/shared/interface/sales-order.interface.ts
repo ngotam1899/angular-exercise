@@ -7,6 +7,7 @@ export interface SalesOrder {
   assignedTo: string;
   creator?: string;
   description?: string;
+  images?: any[];
 }
 
 export interface IParamsSalesOrder {

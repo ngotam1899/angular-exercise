@@ -8,6 +8,9 @@ import { salesOrderRoutes } from './sales-order.routing';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SalesOrderDetailComponent } from './sales-order-detail/sales-order-detail.component';
 
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+
 @NgModule({
   declarations: [
     SalesOrderFormComponent,
@@ -19,6 +22,8 @@ import { SalesOrderDetailComponent } from './sales-order-detail/sales-order-deta
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(salesOrderRoutes),
+    NzUploadModule,
+    NzModalModule,
     SharedModule
   ],
   entryComponents: [

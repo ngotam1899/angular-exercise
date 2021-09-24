@@ -135,12 +135,11 @@ class UserController {
         var image;
         /* 2. In case upload a image (.png .jpeg .jpg) */
         const file = req.body.image;
-        if (file) {
-          image = await upload(file);
-        }
+        if (file) image = await upload(file);
+        else throw new Error("No image found")
         return apiResponse.successResponseWithData(res, 'Success', { image });
-      } catch (error) {
-        next(error);
+      } catch (err) {
+        return apiResponse.ErrorResponse(res, err);
       }
     };
 }

@@ -13,6 +13,9 @@ const SalesOrder = new Schema({
     description: { type: String, required: false },
     createdTime: { type: Date, default: new Date() },
     updatedTime: { type: Date, default: new Date() },
+    images: [{
+        url: { type: String }
+    }]
 });
 
 module.exports = mg.model('SalesOrder', SalesOrder);

@@ -126,7 +126,8 @@ export class SalesOrderComponent implements OnInit {
         total: saleOrder ? saleOrder.total : "",
         assignedTo: saleOrder ? saleOrder.assignedTo: "",
         creator: saleOrder ? saleOrder.creator : "",
-        description: saleOrder ? saleOrder.description: ""
+        description: saleOrder ? saleOrder.description: "",
+        images: saleOrder ? saleOrder.images : []
       }
     });
 

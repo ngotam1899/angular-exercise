@@ -58,11 +58,9 @@ export class UserFormComponent implements OnInit {
     }
     const reader = new FileReader();
     reader.readAsDataURL(this.files[0]);
-    //Upload my image to cloudinary
     reader.onloadend = () => {
       this.userService.uploadAvatar(reader.result).subscribe((response) => {
         data.image = response.data.image;
-        console.log(data);
         this.handleSubmit(data)
       });
     }
