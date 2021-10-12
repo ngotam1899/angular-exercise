@@ -47,6 +47,7 @@ class AuthController {
                     if(user){
                         req.isAdmin = user.isAdmin;
                         req.username = user.username;
+                        req.id = user._id;
                         next();
                     }
                     else{

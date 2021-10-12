@@ -23,7 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       this.router.navigate(['/management/403']);
       //this.router.navigate(['/login']);
     } else if (err.status === 500) {
-      this.router.navigate(['/management/403']);
+      //this.router.navigate(['/management/403']);
       //this.router.navigate(['/login']);
     } else {
       console.error(err)

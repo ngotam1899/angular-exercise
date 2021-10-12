@@ -22,8 +22,9 @@ class ContactsController {
     // [GET] /contacts/revenue - function to get the revenue figures of contacts
     revenueContacts = async (req, res) => {
       try {
+        console.log(req)
         let condition = {};
-        if(!req.isAdmin) condition.assignedTo = req.username
+        if(!req.isAdmin) condition.assignedTo = req.id
         const pipeline = [
           {
             '$match': condition
@@ -89,7 +90,7 @@ class ContactsController {
         /* Sorting area */
         const isAdmin = req.isAdmin;
         if(!isAdmin){
-          condition.assignedTo = req.username;
+          condition.assignedTo = req.id;
           const contacts = await Contacts.find(condition)
           .sort(sort)
           .limit(limit)
